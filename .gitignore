@@ -1,0 +1,9 @@
+km/.sonarkm.ko.cmd
+km/.sonarkm.mod.o.cmd
+km/.sonarkm.o.cmd
+km/Module.symvers
+km/modules.order
+km/sonarkm.mod.c
+km/sonarkm.mod.o
+km/sonarkm.o
+km/.tmp_versions/*
