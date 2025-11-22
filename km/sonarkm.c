@@ -71,47 +71,50 @@ module_exit(sonar_exit);
 // all the variables
 static int sonar_major = 61; /* be sure to run mknod with this major num! */
 static struct my_timer_holder *my_timer;
-int currentFrequency = 1; // defaults to a 1x multiplyer
 int echo1_time, echo2_time, echo3_time;
 static int irq_echo1 = 0;
 static int irq_echo2 = 0;
 static int irq_echo3 = 0;
 
+int echo1_state = 0;
+int echo2_state = 0;
+int echo3_state = 0;
+
+
 static irqreturn_t echo1_rise(int irq, void *dev_id) {
   printk(KERN_ALERT "ECHO1 RISE");
-  echo1_time = jiffies;
-  return IRQ_HANDLED;
-}
-
-static irqreturn_t echo1_fall(int irq, void *dev_id) {
-  echo1_time = jiffies - echo1_time;
-  printk(KERN_ALERT "ECHO1 time jiffies :%d", echo1_time);
+  if (!echo1_state){
+    echo1_time = jiffies;
+  }else{
+    echo1_time = jiffies - echo1_time;
+    printk(KERN_ALERT "ECHO1 Time jiffies: %d", echo1_time);
+  }
+  echo1_state = !echo1_state;
   return IRQ_HANDLED;
 }
 
 static irqreturn_t echo2_rise(int irq, void *dev_id) {
   printk(KERN_ALERT "ECHO2 RISE");
-  echo2_time = jiffies;
-  return IRQ_HANDLED;
-}
-
-static irqreturn_t echo2_fall(int irq, void *dev_id) {
-  echo2_time = jiffies - echo2_time;
-  printk(KERN_ALERT "ECHO2 time jiffies :%d", echo2_time);
-  return IRQ_HANDLED;
+if (!echo2_state){
+    echo2_time = jiffies;
+  }else{
+    echo2_time = jiffies - echo2_time;
+    printk(KERN_ALERT "ECHO2 Time jiffies: %d", echo2_time);
+  }
+  echo1_state = !echo1_state;  return IRQ_HANDLED;
 }
 
 static irqreturn_t echo3_rise(int irq, void *dev_id) {
   printk(KERN_ALERT "ECHO3 RISE");
-  echo3_time = jiffies;
-  return IRQ_HANDLED;
+  if (!echo3_state){
+    echo3_time = jiffies;
+  }else{
+    echo3_time = jiffies - echo3_time;
+    printk(KERN_ALERT "ECHO3 Time jiffies: %d", echo3_time);
+  }
+  echo1_state = !echo1_state;  return IRQ_HANDLED;
 }
 
-static irqreturn_t echo3_fall(int irq, void *dev_id) {
-  echo3_time = jiffies - echo3_time;
-  printk(KERN_ALERT "ECHO3 time jiffies :%d", echo3_time);
-  return IRQ_HANDLED;
-}
 
 static int sonar_init(void) {
   // First set up the timer
@@ -133,7 +136,7 @@ static int sonar_init(void) {
   timer_setup(&my_timer->timer, timer_handler, 0);
   mod_timer(&my_timer->timer,
             jiffies +
-                msecs_to_jiffies(currentFrequency * 10)); // immediately start
+                msecs_to_jiffies(10)); // immediately start
 
   // configure GPIO pins
   result = gpio_request(GPIO_TRIG1, "trigger_1");
@@ -186,44 +189,23 @@ static int sonar_init(void) {
 
   // request IRQs for les buttons
   irq_echo1 = gpio_to_irq(GPIO_ECHO1);
-  result = request_irq(irq_echo1, echo1_rise, IRQF_TRIGGER_RISING, "echo_1", NULL);
+  result = request_irq(irq_echo1, echo1_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_1", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO1 RISING\n");
     return result;
   }
 
   irq_echo2 = gpio_to_irq(GPIO_ECHO2);
-  result = request_irq(irq_echo2, echo2_rise, IRQF_TRIGGER_RISING, "echo_2", NULL);
+  result = request_irq(irq_echo2, echo2_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING) , "echo_2", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO2 RISING\n");
     return result;
   }
 
   irq_echo3 = gpio_to_irq(GPIO_ECHO3);
-  result = request_irq(irq_echo3, echo3_rise, IRQF_TRIGGER_RISING, "echo_3", NULL);
+  result = request_irq(irq_echo3, echo3_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_3", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO3 RISING\n");
-    return result;
-  }
-
-  irq_echo3 = gpio_to_irq(GPIO_ECHO3);
-  result = request_irq(irq_echo3, echo1_fall, IRQF_TRIGGER_FALLING, "echo_3", NULL);
-  if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO3 FALLING\n");
-    return result;
-  }
-
-  irq_echo2 = gpio_to_irq(GPIO_ECHO3);
-  result = request_irq(irq_echo3, echo2_fall, IRQF_TRIGGER_FALLING, "echo_2", NULL);
-  if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2 FALLING\n");
-    return result;
-  }
-
-  irq_echo1 = gpio_to_irq(GPIO_ECHO3);
-  result = request_irq(irq_echo3, echo3_fall, IRQF_TRIGGER_FALLING, "echo_1", NULL);
-  if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO1 FALLING\n");
     return result;
   }
 
