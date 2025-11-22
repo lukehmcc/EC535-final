@@ -188,42 +188,42 @@ static int sonar_init(void) {
   irq_echo1 = gpio_to_irq(GPIO_ECHO1);
   result = request_irq(irq_echo1, echo1_rise, IRQF_TRIGGER_RISING, "echo_1", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for \n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO1 RISING\n");
     return result;
   }
 
   irq_echo2 = gpio_to_irq(GPIO_ECHO2);
   result = request_irq(irq_echo2, echo2_rise, IRQF_TRIGGER_RISING, "echo_2", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2\n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO2 RISING\n");
     return result;
   }
 
   irq_echo3 = gpio_to_irq(GPIO_ECHO3);
   result = request_irq(irq_echo3, echo3_rise, IRQF_TRIGGER_RISING, "echo_3", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2\n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO3 RISING\n");
     return result;
   }
 
   irq_echo3 = gpio_to_irq(GPIO_ECHO3);
   result = request_irq(irq_echo3, echo1_fall, IRQF_TRIGGER_FALLING, "echo_3", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2\n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO3 FALLING\n");
     return result;
   }
 
   irq_echo2 = gpio_to_irq(GPIO_ECHO3);
   result = request_irq(irq_echo3, echo2_fall, IRQF_TRIGGER_FALLING, "echo_2", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2\n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO2 FALLING\n");
     return result;
   }
 
   irq_echo1 = gpio_to_irq(GPIO_ECHO3);
   result = request_irq(irq_echo3, echo3_fall, IRQF_TRIGGER_FALLING, "echo_1", NULL);
   if (result) {
-    printk(KERN_ALERT "Failed to request IRQ for ECHO2\n");
+    printk(KERN_ALERT "Failed to request IRQ for ECHO1 FALLING\n");
     return result;
   }
 
