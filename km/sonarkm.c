@@ -82,7 +82,7 @@ int echo3_state = 0;
 
 
 static irqreturn_t echo1_rise(int irq, void *dev_id) {
-  printk(KERN_ALERT "ECHO1 RISE");
+  //printk(KERN_ALERT "ECHO1 RISE");
   if (!echo1_state){
     echo1_time = jiffies;
   }else{
@@ -94,7 +94,7 @@ static irqreturn_t echo1_rise(int irq, void *dev_id) {
 }
 
 static irqreturn_t echo2_rise(int irq, void *dev_id) {
-  printk(KERN_ALERT "ECHO2 RISE");
+  //printk(KERN_ALERT "ECHO2 RISE");
 if (!echo2_state){
     echo2_time = jiffies;
   }else{
@@ -105,7 +105,7 @@ if (!echo2_state){
 }
 
 static irqreturn_t echo3_rise(int irq, void *dev_id) {
-  printk(KERN_ALERT "ECHO3 RISE");
+  //printk(KERN_ALERT "ECHO3 RISE");
   if (!echo3_state){
     echo3_time = jiffies;
   }else{
