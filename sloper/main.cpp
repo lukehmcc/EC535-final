@@ -5,7 +5,8 @@
 #include <QGraphicsView>
 #include <QPropertyAnimation>
 
-// 1. Define the Wrapper Class
+// Define the Wrapper Class
+// This is needed to add animation to a sprite
 class AnimatableImage : public QObject, public QGraphicsPixmapItem {
   Q_OBJECT
   // These macros allow QPropertyAnimation to "see" these values
@@ -20,19 +21,14 @@ public:
   }
 };
 
-// If you are building this as a single file, this line is required at the end.
-// If using CMake with separate headers, you don't need the include at the
-// bottom.
-
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
 
   QGraphicsScene scene;
 
-  // 2. Load the image
-  // Make sure the "static" folder is in your BUILD directory (where the .exe
-  // is)
-  QPixmap pix("/home/covalent/devStuff/school/EC535-final/sloper/static/ski.jpg");
+  // Load image
+  // sources from the build/ directory
+  QPixmap pix("../static/ski.jpg");
 
   if (pix.isNull()) {
     qWarning() << "Image failed to load! Check your path.";
@@ -42,11 +38,11 @@ int main(int argc, char *argv[]) {
     pix.fill(Qt::red);
   }
 
-  // 3. Create the item and add to scene
+  // Create the item and add to scene
   AnimatableImage *guy = new AnimatableImage(pix);
   scene.addItem(guy);
 
-  // 4. Setup Animation: Let's Move AND Rotate him
+  // Setup Animation: Let's Move AND Rotate him
 
   // Animation A: Movement
   QPropertyAnimation *moveAnim = new QPropertyAnimation(guy, "pos");
