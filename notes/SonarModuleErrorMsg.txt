@@ -1,0 +1,156 @@
+[  410.556092] ECHO1 RISE
+[  410.565256] genirq: Flags mismatch irq 92. 00002002 (echo_3) vs. 00002001 (echo_3)
+[  410.565427] Failed to request IRQ for ECHO2
+[  410.585134] Unable to handle kernel paging request at virtual address bf0002a4
+[  410.592419] pgd = 06152594
+[  410.595142] [bf0002a4] *pgd=9b288811, *pte=00000000, *ppte=00000000
+[  410.601469] Internal error: Oops: 80000007 [#1] PREEMPT SMP ARM
+[  410.601476] Modules linked in: sonarkm(O+)
+[  410.601497] CPU: 0 PID: 1749 Comm: irq/92-echo_3 Tainted: G           O      4.19.82 #22
+[  410.601501] Hardware name: Generic AM33XX (Flattened Device Tree)
+[  410.601516] PC is at 0xbf0002a4
+[  410.601536] LR is at irq_forced_thread_fn+0x30/0xa8
+[  410.601540] pc : [<bf0002a4>]    lr : [<c01bc680>]    psr: 600f0013
+[  410.601545] sp : db25df08  ip : db25ded0  fp : db25df24
+[  410.601549] r10: c01bc650  r9 : db195340  r8 : dc580400
+[  410.601553] r7 : 00000001  r6 : 00000000  r5 : db195340  r4 : dc580400
+[  410.601558] r3 : bf0002a4  r2 : 0bca2d8b  r1 : 00000000  r0 : 0000005c
+[  410.601565] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  410.601570] Control: 10c5387d  Table: 9b258019  DAC: 00000051
+[  410.601576] Process irq/92-echo_3 (pid: 1749, stack limit = 0xb2fffc30)
+[  410.601581] Stack: (0xdb25df08 to 0xdb25e000)
+[  410.601591] df00:                   db195364 ffffe000 00000000 00000001 db25df74 db25df28
+[  410.601601] df20: c01bca70 c01bc65c c0e92e68 c12075c8 c12b0ae0 db25df40 c0b1dd84 00000000
+[  410.601611] df40: c01bc858 0bca2d8b c0170b3c db195300 db195480 00000000 db25c000 db195340
+[  410.601620] df60: c01bc938 dc349c54 db25dfac db25df78 c0171210 c01bc944 db19531c db19531c
+[  410.601629] df80: 00000000 db195480 c01710a4 00000000 00000000 00000000 00000000 00000000
+[  410.601638] dfa0: 00000000 db25dfb0 c01010f0 c01710b0 00000000 00000000 00000000 00000000
+[  410.601647] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  410.601655] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[  410.601687] [<c01bc680>] (irq_forced_thread_fn) from [<c01bca70>] (irq_thread+0x138/0x240)
+[  410.601709] [<c01bca70>] (irq_thread) from [<c0171210>] (kthread+0x16c/0x174)
+[  410.601723] [<c0171210>] (kthread) from [<c01010f0>] (ret_from_fork+0x14/0x24)
+[  410.601728] Exception stack(0xdb25dfb0 to 0xdb25dff8)
+[  410.601734] dfa0:                                     00000000 00000000 00000000 00000000
+[  410.601742] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  410.601750] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  410.601760] Code: bad PC value
+[  410.807434] ---[ end trace 0000000000000002 ]---
+[  410.812104] genirq: exiting task "irq/92-echo_3" (1749) is an active IRQ thread (irq 92)
+[  410.820369] Unable to handle kernel paging request at virtual address bf000324
+[  410.827632] pgd = 06152594
+[  410.830354] [bf000324] *pgd=9b288811, *pte=00000000, *ppte=00000000
+[  410.836672] Internal error: Oops: 80000007 [#2] PREEMPT SMP ARM
+[  410.836676] Modules linked in: sonarkm(O+)
+[  410.836691] CPU: 0 PID: 1747 Comm: irq/84-echo_1 Tainted: G      D    O      4.19.82 #22
+[  410.836695] Hardware name: Generic AM33XX (Flattened Device Tree)
+[  410.836702] PC is at 0xbf000324
+[  410.836711] LR is at irq_forced_thread_fn+0x30/0xa8
+[  410.836716] pc : [<bf000324>]    lr : [<c01bc680>]    psr: 600f0113
+[  410.836719] sp : db251f08  ip : db251ed0  fp : db251f24
+[  410.836723] r10: c01bc650  r9 : db195ec0  r8 : dc513000
+[  410.836727] r7 : 00000001  r6 : 00000000  r5 : db195ec0  r4 : dc513000
+[  410.836731] r3 : bf000324  r2 : 0bca2d8b  r1 : 00000000  r0 : 00000054
+[  410.836737] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  410.836742] Control: 10c5387d  Table: 9b258019  DAC: 00000051
+[  410.836747] Process irq/84-echo_1 (pid: 1747, stack limit = 0x7676f576)
+[  410.836752] Stack: (0xdb251f08 to 0xdb252000)
+[  410.836761] 1f00:                   db195ee4 ffffe000 00000000 00000001 db251f74 db251f28
+[  410.836770] 1f20: c01bca70 c01bc65c c0e92e68 c12075c8 c12b0ae0 db251f40 c0b1dd84 00000000
+[  410.836780] 1f40: c01bc858 0bca2d8b c0170b3c db1959c0 db195940 00000000 db250000 db195ec0
+[  410.836789] 1f60: c01bc938 dc349c54 db251fac db251f78 c0171210 c01bc944 db1959dc db1959dc
+[  410.836799] 1f80: 00000000 db195940 c01710a4 00000000 00000000 00000000 00000000 00000000
+[  410.836807] 1fa0: 00000000 db251fb0 c01010f0 c01710b0 00000000 00000000 00000000 00000000
+[  410.836816] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  410.836825] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[  410.836843] [<c01bc680>] (irq_forced_thread_fn) from [<c01bca70>] (irq_thread+0x138/0x240)
+[  410.836855] [<c01bca70>] (irq_thread) from [<c0171210>] (kthread+0x16c/0x174)
+[  410.836866] [<c0171210>] (kthread) from [<c01010f0>] (ret_from_fork+0x14/0x24)
+[  410.836870] Exception stack(0xdb251fb0 to 0xdb251ff8)
+[  410.836876] 1fa0:                                     00000000 00000000 00000000 00000000
+[  410.836885] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  410.836892] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  410.836899] Code: bad PC value
+[  411.042556] ---[ end trace 0000000000000003 ]---
+[  411.047214] genirq: exiting task "irq/84-echo_1" (1747) is an active IRQ thread (irq 84)
+[  411.055418] Unable to handle kernel paging request at virtual address bf0002e4
+[  411.062676] pgd = 06152594
+[  411.065396] [bf0002e4] *pgd=9b288811, *pte=00000000, *ppte=00000000
+[  411.071711] Internal error: Oops: 80000007 [#3] PREEMPT SMP ARM
+[  411.071715] Modules linked in: sonarkm(O+)
+[  411.071728] CPU: 0 PID: 1748 Comm: irq/88-echo_2 Tainted: G      D    O      4.19.82 #22
+[  411.071731] Hardware name: Generic AM33XX (Flattened Device Tree)
+[  411.071738] PC is at 0xbf0002e4
+[  411.071747] LR is at irq_forced_thread_fn+0x30/0xa8
+[  411.071751] pc : [<bf0002e4>]    lr : [<c01bc680>]    psr: 600f0113
+[  411.071755] sp : db2cff08  ip : db2cfed0  fp : db2cff24
+[  411.071759] r10: c01bc650  r9 : db195940  r8 : dc5e5000
+[  411.071763] r7 : 00000001  r6 : 00000000  r5 : db195940  r4 : dc5e5000
+[  411.071767] r3 : bf0002e4  r2 : 0bca2d8b  r1 : 00000000  r0 : 00000058
+[  411.071772] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  411.071777] Control: 10c5387d  Table: 9b258019  DAC: 00000051
+[  411.071782] Process irq/88-echo_2 (pid: 1748, stack limit = 0x8c6e3223)
+[  411.071786] Stack: (0xdb2cff08 to 0xdb2d0000)
+[  411.071795] ff00:                   db195964 ffffe000 00000000 00000001 db2cff74 db2cff28
+[  411.071804] ff20: c01bca70 c01bc65c c0e92e68 c12075c8 c12b0ae0 db2cff40 c0b1dd84 00000000
+[  411.071814] ff40: c01bc858 0bca2d8b c0170b3c db195280 db195340 00000000 db2ce000 db195940
+[  411.071823] ff60: c01bc938 dc349c54 db2cffac db2cff78 c0171210 c01bc944 db19529c db19529c
+[  411.071832] ff80: 00000000 db195340 c01710a4 00000000 00000000 00000000 00000000 00000000
+[  411.071841] ffa0: 00000000 db2cffb0 c01010f0 c01710b0 00000000 00000000 00000000 00000000
+[  411.071849] ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  411.071859] ffe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[  411.071874] [<c01bc680>] (irq_forced_thread_fn) from [<c01bca70>] (irq_thread+0x138/0x240)
+[  411.071886] [<c01bca70>] (irq_thread) from [<c0171210>] (kthread+0x16c/0x174)
+[  411.071895] [<c0171210>] (kthread) from [<c01010f0>] (ret_from_fork+0x14/0x24)
+[  411.071900] Exception stack(0xdb2cffb0 to 0xdb2cfff8)
+[  411.071906] ffa0:                                     00000000 00000000 00000000 00000000
+[  411.071914] ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  411.071921] ffe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  411.071927] Code: bad PC value
+[  411.277581] ---[ end trace 0000000000000004 ]---
+[  411.282234] genirq: exiting task "irq/88-echo_2" (1748) is an active IRQ thread (irq 88)
+[  411.290594] Unable to handle kernel paging request at virtual address bf000364
+[  411.297856] pgd = 06152594
+[  411.300577] [bf000364] *pgd=9b288811, *pte=00000000, *ppte=00000000
+[  411.306892] Internal error: Oops: 80000007 [#4] PREEMPT SMP ARM
+[  411.306896] Modules linked in: sonarkm(O+)
+[  411.306909] CPU: 0 PID: 10 Comm: ktimersoftd/0 Tainted: G      D    O      4.19.82 #22
+[  411.306913] Hardware name: Generic AM33XX (Flattened Device Tree)
+[  411.306919] PC is at 0xbf000364
+[  411.306938] LR is at expire_timers+0xd0/0x380
+[  411.306942] pc : [<bf000364>]    lr : [<c01d94f4>]    psr: 600f0113
+[  411.306946] sp : dc15be28  ip : dc15be18  fp : dc15be74
+[  411.306949] r10: 00000000  r9 : dc15be78  r8 : ffffe000
+[  411.306954] r7 : 00000000  r6 : c12b1308  r5 : df8f9800  r4 : db196640
+[  411.306958] r3 : bf000364  r2 : 00000000  r1 : c0e95768  r0 : db196640
+[  411.306963] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  411.306967] Control: 10c5387d  Table: 9b258019  DAC: 00000051
+[  411.306972] Process ktimersoftd/0 (pid: 10, stack limit = 0xada663ee)
+[  411.306977] Stack: (0xdc15be28 to 0xdc15c000)
+[  411.306985] be20:                   c1207c58 df8f9808 dc15be74 c0e95768 c12075f4 c12b0b2b
+[  411.306995] be40: df8f9808 bf000364 dc15be74 dc15be74 df8f9800 dc15be74 c1205100 c12075c8
+[  411.307004] be60: c1207c58 df8f9808 dc15becc dc15be78 c01d9a8c c01d9430 00000000 c12075c8
+[  411.307013] be80: dc139100 c0b1dd84 dc15bea4 c0b1dfd0 c0b1dd84 c017d328 dc15becc 0bca2d8b
+[  411.307022] bea0: c11b63b0 c11b63b0 00000004 00000001 c1207c58 c12b1024 ffffe000 04208140
+[  411.307032] bec0: dc15bf24 dc15bed0 c01534ec c01d9988 c0102980 c1207c58 c0b19b8c c0e8b7d4
+[  411.307041] bee0: c0ed338c c1203084 c1203080 c0ed33d8 c11bee00 00000000 dc15bf24 ffffe000
+[  411.307050] bf00: dc107800 c12257d4 c12075c8 00000001 00000000 00000000 dc15bf3c dc15bf28
+[  411.307059] bf20: c0153764 c0153288 ffffe000 dc107800 dc15bf74 dc15bf40 c0175e4c c0153734
+[  411.307068] bf40: dc15bf74 0bca2d8b c0170b3c dc107580 dc107e00 00000000 dc15a000 dc107800
+[  411.307077] bf60: c0175c64 dc12bdd4 dc15bfac dc15bf78 c0171210 c0175c70 dc10759c dc10759c
+[  411.307086] bf80: 00000000 dc107e00 c01710a4 00000000 00000000 00000000 00000000 00000000
+[  411.307095] bfa0: 00000000 dc15bfb0 c01010f0 c01710b0 00000000 00000000 00000000 00000000
+[  411.307103] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  411.307112] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[  411.307132] [<c01d94f4>] (expire_timers) from [<c01d9a8c>] (run_timer_softirq+0x110/0x1e8)
+[  411.307150] [<c01d9a8c>] (run_timer_softirq) from [<c01534ec>] (do_current_softirqs+0x270/0x4ac)
+[  411.307161] [<c01534ec>] (do_current_softirqs) from [<c0153764>] (run_ksoftirqd+0x3c/0x5c)
+[  411.307180] [<c0153764>] (run_ksoftirqd) from [<c0175e4c>] (smpboot_thread_fn+0x1e8/0x334)
+[  411.307193] [<c0175e4c>] (smpboot_thread_fn) from [<c0171210>] (kthread+0x16c/0x174)
+[  411.307203] [<c0171210>] (kthread) from [<c01010f0>] (ret_from_fork+0x14/0x24)
+[  411.307207] Exception stack(0xdc15bfb0 to 0xdc15bff8)
+[  411.307213] bfa0:                                     00000000 00000000 00000000 00000000
+[  411.307221] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[  411.307228] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  411.307235] Code: bad PC value
+[  411.595478] ---[ end trace 0000000000000005 ]---
