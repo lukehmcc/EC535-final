@@ -168,7 +168,7 @@ static int sonar_init(void) {
   }
   gpio_direction_input(GPIO_ECHO1);
 
-  result = gpio_request(GPIO_ECHO2, "ehco_2");
+  result = gpio_request(GPIO_ECHO2, "echo_2");
   if (result) {
     printk(KERN_ALERT "Failed to request GPIO %d\n", GPIO_ECHO2);
     // goto err_gpio;
@@ -176,7 +176,7 @@ static int sonar_init(void) {
   }
   gpio_direction_input(GPIO_ECHO2);
 
-  result = gpio_request(GPIO_ECHO3, "ehco_3");
+  result = gpio_request(GPIO_ECHO3, "echo_3");
   if (result) {
     printk(KERN_ALERT "Failed to request GPIO %d\n", GPIO_ECHO3);
     // goto err_gpio;
@@ -227,7 +227,7 @@ static int sonar_init(void) {
     return result;
   }
 
-  printk("sonar loaded.\n");
+  printk(KERN_ALERT "sonar loaded\n");
 
   /* Registering device */
   result = register_chrdev(sonar_major, "sonar", &sonar_fops);
