@@ -3,6 +3,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QPropertyAnimation>
 
 // Define the Wrapper Class
@@ -19,6 +20,66 @@ public:
     // corner
     setTransformOriginPoint(pix.width() / 2, pix.height() / 2);
   }
+};
+
+// class to handle keyboard input
+class KeyboardControlledView : public QGraphicsView {
+  Q_OBJECT
+
+public:
+  KeyboardControlledView(QGraphicsScene *scene, AnimatableImage *skier,
+                         QPropertyAnimation *moveAnim,
+                         QPropertyAnimation *spinAnim)
+      : QGraphicsView(scene), m_skier(skier), m_moveAnim(moveAnim),
+        m_spinAnim(spinAnim), m_animationsPaused(false) {
+    // enable keyboard focus
+    setFocusPolicy(Qt::StrongFocus);
+    // mvement step size (in pixels)
+    m_stepSize = 10.0;
+  }
+
+protected:
+  void keyPressEvent(QKeyEvent *event) override {
+    // pause animations on first key press if not already paused
+    if (!m_animationsPaused) {
+      m_moveAnim->pause();
+      m_spinAnim->pause();
+      m_animationsPaused = true;
+    }
+
+    // get current position
+    QPointF currentPos = m_skier->pos();
+    QPointF newPos = currentPos;
+
+    // handle arrow key movement
+    switch (event->key()) {
+    case Qt::Key_Up:
+      newPos.setY(currentPos.y() - m_stepSize);
+      break;
+    case Qt::Key_Down:
+      newPos.setY(currentPos.y() + m_stepSize);
+      break;
+    case Qt::Key_Left:
+      newPos.setX(currentPos.x() - m_stepSize);
+      break;
+    case Qt::Key_Right:
+      newPos.setX(currentPos.x() + m_stepSize);
+      break;
+    default:
+      QGraphicsView::keyPressEvent(event);
+      return;
+    }
+
+    // update skier position
+    m_skier->setPos(newPos);
+  }
+
+private:
+  AnimatableImage *m_skier;
+  QPropertyAnimation *m_moveAnim;
+  QPropertyAnimation *m_spinAnim;
+  bool m_animationsPaused;
+  qreal m_stepSize;
 };
 
 int main(int argc, char *argv[]) {
@@ -60,8 +121,8 @@ int main(int argc, char *argv[]) {
   spinAnim->setLoopCount(-1);
   spinAnim->start();
 
-  // 5. Setup View
-  QGraphicsView view(&scene);
+  // 5. Setup View with keyboard controls
+  KeyboardControlledView view(&scene, guy, moveAnim, spinAnim);
   view.setRenderHint(QPainter::Antialiasing);
   view.resize(600, 400);
   view.show();
