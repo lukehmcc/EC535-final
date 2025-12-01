@@ -129,15 +129,15 @@ int main(int argc, char *argv[]) {
 
   // Load images & make them animatable
   // sources from the build/ directory
-  AnimatableImage *guy = loadImage("../static/ski.jpg", 200, 200);
+  AnimatableImage *guy = loadImage("../static/ski.jpg", 150, 150);
   scene.addItem(guy);
-  AnimatableImage *tree1 = loadImage("../static/pine.png", 200, 200);
+  AnimatableImage *tree1 = loadImage("../static/pine.png", 150, 150);
   scene.addItem(tree1);
 
   // Setup View with keyboard controls
   KeyboardControlledView view(&scene, guy);
   view.setRenderHint(QPainter::Antialiasing);
-  view.resize(600, 900);
+  view.resize(500, 500);
   view.show();
 
   return a.exec();
