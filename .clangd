@@ -1,0 +1,13 @@
+CompileFlags:
+  Add:
+    - "-I/usr/lib/qt6/include"
+    - "-I/usr/lib/qt6/include/QtCore"
+    - "-I/usr/lib/qt6/include/QtGui"
+    - "-I/usr/lib/qt6/include/QtWidgets"
+    - "-I/usr/lib/qt6/include/QtQml"
+    - "-I/usr/lib/qt6/include/QtQuick"
+    - "-std=c++17"
+    - "-DQT_CORE_LIB"
+    - "-DQT_GUI_LIB"
+    - "-DQT_WIDGETS_LIB"
+  CompilationDatabase: build

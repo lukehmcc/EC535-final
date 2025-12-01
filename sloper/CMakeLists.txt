@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(sloper VERSION 0.1 LANGUAGES CXX)
 
+set(QT_DEFAULT_MAJOR_VERSION 5)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -14,9 +16,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -47,7 +49,7 @@ target_link_libraries(sloper PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
+if(${QT_VERSION} VERSION_LESS 5.15.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.sloper)
 endif()
 set_target_properties(sloper PROPERTIES
