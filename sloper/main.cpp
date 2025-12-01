@@ -148,6 +148,7 @@ int main(int argc, char *argv[]) {
     scene.addItem(tree3);
     tree3->setPos(600, 150); // put tree off screen
 
+    // animation for tree 1
     QPropertyAnimation *animation = new QPropertyAnimation(tree1, "pos");
     animation->setDuration(5000); // 5 seconds to move down
     animation->setStartValue(QPointF(200, -150)); // Start above screen at x=200
@@ -156,7 +157,7 @@ int main(int argc, char *argv[]) {
     animation->setLoopCount(-1);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 
-
+    // animation for tree 2
     QPropertyAnimation *animation2 = new QPropertyAnimation(tree2, "pos");
     animation2->setDuration(8000); // 5 seconds to move down
     animation2->setStartValue(QPointF(50, -450)); // Start above screen at x=200
@@ -165,6 +166,7 @@ int main(int argc, char *argv[]) {
     animation2->setLoopCount(-1);
     animation2->start(QAbstractAnimation::DeleteWhenStopped);
 
+    // animation for tree 3
     QPropertyAnimation *animation3 = new QPropertyAnimation(tree3, "pos");
     animation3->setDuration(8000); // 5 seconds to move down
     animation3->setStartValue(QPointF(350, -950)); // Start above screen at x=200
