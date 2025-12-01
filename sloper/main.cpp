@@ -18,7 +18,7 @@ public:
   explicit AnimatableImage(const QPixmap &pix) : QGraphicsPixmapItem(pix) {
     // Set origin to center so it spins in place rather than around the top-left
     // corner
-    setTransformOriginPoint(pix.width() / 2, pix.height() / 2);
+    setTransformOriginPoint(pix.width() / 2, pix.height() / 2 - 200);
   }
 };
 
@@ -27,23 +27,18 @@ class KeyboardControlledView : public QGraphicsView {
   Q_OBJECT
 
 public:
-  KeyboardControlledView(QGraphicsScene *scene, AnimatableImage *skier,
-                         QPropertyAnimation *moveAnim,
-                         QPropertyAnimation *spinAnim)
-      : QGraphicsView(scene), m_skier(skier), m_moveAnim(moveAnim),
-        m_spinAnim(spinAnim), m_animationsPaused(false) {
+  KeyboardControlledView(QGraphicsScene *scene, AnimatableImage *skier)
+      : QGraphicsView(scene), m_skier(skier), m_animationsPaused(false) {
     // enable keyboard focus
     setFocusPolicy(Qt::StrongFocus);
     // mvement step size (in pixels)
-    m_stepSize = 10.0;
+    m_stepSize = 150.0;
   }
 
 protected:
   void keyPressEvent(QKeyEvent *event) override {
     // pause animations on first key press if not already paused
     if (!m_animationsPaused) {
-      m_moveAnim->pause();
-      m_spinAnim->pause();
       m_animationsPaused = true;
     }
 
@@ -54,16 +49,42 @@ protected:
     // handle arrow key movement
     switch (event->key()) {
     case Qt::Key_Up:
-      newPos.setY(currentPos.y() - m_stepSize);
-      break;
+        if (is_bottom) {
+            is_bottom = false;
+            newPos.setY(currentPos.y() - m_stepSize);
+        } else if (!is_top) {
+            is_top = true;
+            newPos.setY(currentPos.y() - m_stepSize);
+        }
+        break;
     case Qt::Key_Down:
-      newPos.setY(currentPos.y() + m_stepSize);
-      break;
+        if (is_top) {
+            is_top = false;
+            newPos.setY(currentPos.y() + m_stepSize);
+        } else if (!is_bottom) {
+            is_bottom = true;
+            newPos.setY(currentPos.y() + m_stepSize);
+        }
+        break;
     case Qt::Key_Left:
-      newPos.setX(currentPos.x() - m_stepSize);
+        if (is_right){
+            is_right = false;
+            newPos.setX(currentPos.x() - m_stepSize);
+        }
+        else if (!is_left){
+            is_left = true;
+            newPos.setX(currentPos.x() - m_stepSize);
+        }
       break;
     case Qt::Key_Right:
-      newPos.setX(currentPos.x() + m_stepSize);
+        if (is_left){
+            is_left = false;
+            newPos.setX(currentPos.x() + m_stepSize);
+        }
+        else if (!is_right){
+            is_right = true;
+            newPos.setX(currentPos.x() + m_stepSize);
+        }
       break;
     default:
       QGraphicsView::keyPressEvent(event);
@@ -76,10 +97,12 @@ protected:
 
 private:
   AnimatableImage *m_skier;
-  QPropertyAnimation *m_moveAnim;
-  QPropertyAnimation *m_spinAnim;
   bool m_animationsPaused;
   qreal m_stepSize;
+  bool is_left = false;
+  bool is_right = false;
+  bool is_top = false;
+  bool is_bottom = false;
 };
 
 int main(int argc, char *argv[]) {
@@ -97,34 +120,19 @@ int main(int argc, char *argv[]) {
     // work
     pix = QPixmap(100, 100);
     pix.fill(Qt::red);
+  } else {
+      // make sure to scale it down to fir the canvas
+      pix = pix.scaled(QSize(200, 200), Qt::KeepAspectRatio, Qt::FastTransformation);
   }
 
   // Create the item and add to scene
   AnimatableImage *guy = new AnimatableImage(pix);
   scene.addItem(guy);
 
-  // Setup Animation: Let's Move AND Rotate him
-
-  // Animation A: Movement
-  QPropertyAnimation *moveAnim = new QPropertyAnimation(guy, "pos");
-  moveAnim->setDuration(3000);
-  moveAnim->setStartValue(QPointF(0, 0));
-  moveAnim->setEndValue(QPointF(200, 200));
-  moveAnim->setLoopCount(-1); // Loop forever
-  moveAnim->start();
-
-  // Animation B: Rotation (Spinning)
-  QPropertyAnimation *spinAnim = new QPropertyAnimation(guy, "rotation");
-  spinAnim->setDuration(1000);
-  spinAnim->setStartValue(0);
-  spinAnim->setEndValue(360);
-  spinAnim->setLoopCount(-1);
-  spinAnim->start();
-
-  // 5. Setup View with keyboard controls
-  KeyboardControlledView view(&scene, guy, moveAnim, spinAnim);
+  // Setup View with keyboard controls
+  KeyboardControlledView view(&scene, guy);
   view.setRenderHint(QPainter::Antialiasing);
-  view.resize(600, 400);
+  view.resize(600, 900);
   view.show();
 
   return a.exec();
@@ -132,3 +140,20 @@ int main(int argc, char *argv[]) {
 
 // This is needed for now because it's in one main.cpp file
 #include "main.moc"
+
+// Animation Examples
+  // // Animation A: Movement
+  // QPropertyAnimation *moveAnim = new QPropertyAnimation(guy, "pos");
+  // moveAnim->setDuration(3000);
+  // moveAnim->setStartValue(QPointF(0, 0));
+  // moveAnim->setEndValue(QPointF(200, 200));
+  // moveAnim->setLoopCount(-1); // Loop forever
+  // moveAnim->start();
+
+  // // Animation B: Rotation (Spinning)
+  // QPropertyAnimation *spinAnim = new QPropertyAnimation(guy, "rotation");
+  // spinAnim->setDuration(1000);
+  // spinAnim->setStartValue(0);
+  // spinAnim->setEndValue(360);
+  // spinAnim->setLoopCount(-1);
+  // spinAnim->start();
