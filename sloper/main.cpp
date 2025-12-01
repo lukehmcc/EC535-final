@@ -106,7 +106,7 @@ private:
 };
 
 // image loader funciton
-QPixmap loadImage(QString path, int width, int height){
+AnimatableImage *loadImage(QString path, int width, int height){
   QPixmap pix(path);
 
   if (pix.isNull()) {
@@ -119,7 +119,7 @@ QPixmap loadImage(QString path, int width, int height){
       // make sure to scale it down to fir the canvas
       pix = pix.scaled(QSize(width, height), Qt::KeepAspectRatio, Qt::FastTransformation);
   }
-  return pix;
+  return new AnimatableImage(pix);
 }
 
 int main(int argc, char *argv[]) {
@@ -127,12 +127,12 @@ int main(int argc, char *argv[]) {
 
   QGraphicsScene scene;
 
-  // Load image
+  // Load images & make them animatable
   // sources from the build/ directory
-  QPixmap pix= loadImage("../static/ski.jpg", 200, 200);
-  // Create the item and add to scene
-  AnimatableImage *guy = new AnimatableImage(pix);
+  AnimatableImage *guy = loadImage("../static/ski.jpg", 200, 200);
   scene.addItem(guy);
+  AnimatableImage *tree1 = loadImage("../static/pine.png", 200, 200);
+  scene.addItem(tree1);
 
   // Setup View with keyboard controls
   KeyboardControlledView view(&scene, guy);
