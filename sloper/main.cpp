@@ -123,24 +123,63 @@ AnimatableImage *loadImage(QString path, int width, int height){
 }
 
 int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-  QGraphicsScene scene;
+    QGraphicsScene scene;
 
-  // Load images & make them animatable
-  // sources from the build/ directory
-  AnimatableImage *guy = loadImage("../static/ski.jpg", 150, 150);
-  scene.addItem(guy);
-  AnimatableImage *tree1 = loadImage("../static/pine.png", 150, 150);
-  scene.addItem(tree1);
+    // Load images & make them animatable
+    // sources from the build/ directory
+    AnimatableImage *guy = loadImage("../static/ski.jpg", 150, 150);
+    scene.addItem(guy);
+    guy->setPos(200,700);
 
-  // Setup View with keyboard controls
-  KeyboardControlledView view(&scene, guy);
-  view.setRenderHint(QPainter::Antialiasing);
-  view.resize(500, 500);
-  view.show();
+    // tree1
+    AnimatableImage *tree1 = loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree1);
+    tree1->setPos(600, 150); // put tree off screen
 
-  return a.exec();
+    // tree2
+    AnimatableImage *tree2 = loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree2);
+    tree2->setPos(600, 150); // put tree off screen
+
+    // tree 3
+    AnimatableImage *tree3 = loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree3);
+    tree3->setPos(600, 150); // put tree off screen
+
+    QPropertyAnimation *animation = new QPropertyAnimation(tree1, "pos");
+    animation->setDuration(5000); // 5 seconds to move down
+    animation->setStartValue(QPointF(200, -150)); // Start above screen at x=200
+    animation->setEndValue(QPointF(200, 1150));  // End below screen
+    animation->setEasingCurve(QEasingCurve::Linear);
+    animation->setLoopCount(-1);
+    animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+
+    QPropertyAnimation *animation2 = new QPropertyAnimation(tree2, "pos");
+    animation2->setDuration(8000); // 5 seconds to move down
+    animation2->setStartValue(QPointF(50, -450)); // Start above screen at x=200
+    animation2->setEndValue(QPointF(50, 1150));  // End below screen
+    animation2->setEasingCurve(QEasingCurve::Linear);
+    animation2->setLoopCount(-1);
+    animation2->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QPropertyAnimation *animation3 = new QPropertyAnimation(tree3, "pos");
+    animation3->setDuration(8000); // 5 seconds to move down
+    animation3->setStartValue(QPointF(350, -950)); // Start above screen at x=200
+    animation3->setEndValue(QPointF(350, 1150));  // End below screen
+    animation3->setEasingCurve(QEasingCurve::Linear);
+    animation3->setLoopCount(-1);
+    animation3->start(QAbstractAnimation::DeleteWhenStopped);
+
+    // Setup View with keyboard controls
+    KeyboardControlledView view(&scene, guy);
+    view.setRenderHint(QPainter::Antialiasing);
+    scene.setSceneRect(0, 0, 500, 1000);
+    view.show();
+
+    return a.exec();
 }
 
 // This is needed for now because it's in one main.cpp file
