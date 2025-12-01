@@ -105,14 +105,9 @@ private:
   bool is_bottom = false;
 };
 
-int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
-
-  QGraphicsScene scene;
-
-  // Load image
-  // sources from the build/ directory
-  QPixmap pix("../static/ski.jpg");
+// image loader funciton
+QPixmap loadImage(QString path, int width, int height){
+  QPixmap pix(path);
 
   if (pix.isNull()) {
     qWarning() << "Image failed to load! Check your path.";
@@ -122,9 +117,19 @@ int main(int argc, char *argv[]) {
     pix.fill(Qt::red);
   } else {
       // make sure to scale it down to fir the canvas
-      pix = pix.scaled(QSize(200, 200), Qt::KeepAspectRatio, Qt::FastTransformation);
+      pix = pix.scaled(QSize(width, height), Qt::KeepAspectRatio, Qt::FastTransformation);
   }
+  return pix;
+}
 
+int main(int argc, char *argv[]) {
+  QApplication a(argc, argv);
+
+  QGraphicsScene scene;
+
+  // Load image
+  // sources from the build/ directory
+  QPixmap pix= loadImage("../static/ski.jpg", 200, 200);
   // Create the item and add to scene
   AnimatableImage *guy = new AnimatableImage(pix);
   scene.addItem(guy);
