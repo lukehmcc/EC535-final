@@ -41,6 +41,9 @@ else()
         add_executable(sloper
             ${PROJECT_SOURCES}
             src/animatableimage.h src/animatableimage.cpp
+            src/gamestate.h src/gamestate.cpp
+            src/keyboardcontrolledview.h src/keyboardcontrolledview.cpp
+            src/helpers.cpp
         )
     endif()
 endif()
