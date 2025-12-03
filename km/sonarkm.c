@@ -71,50 +71,84 @@ module_exit(sonar_exit);
 // all the variables
 static int sonar_major = 61; /* be sure to run mknod with this major num! */
 static struct my_timer_holder *my_timer;
-int echo1_time, echo2_time, echo3_time;
-static int irq_echo1 = 0;
-static int irq_echo2 = 0;
-static int irq_echo3 = 0;
-
-int echo1_state = 0;
-int echo2_state = 0;
-int echo3_state = 0;
+int irq_echo1;
+int irq_echo2;
+int irq_echo3;
 
 
-static irqreturn_t echo1_rise(int irq, void *dev_id) {
-  //printk(KERN_ALERT "ECHO1 RISE");
-  if (!echo1_state){
-    echo1_time = jiffies;
-  }else{
-    echo1_time = jiffies - echo1_time;
-    printk(KERN_ALERT "ECHO1 Time jiffies: %d", echo1_time);
+static volatile u32 echo1_start_lo;
+static volatile u32 echo1_duration_us;
+static volatile u32 echo2_start_lo;
+static volatile u32 echo2_duration_us;
+static volatile u32 echo3_start_lo;
+static volatile u32 echo3_duration_us;
+
+
+static irqreturn_t echo1_irq(int irq, void *dev_id) {
+  int gpio_value = gpio_get_value(GPIO_ECHO1);
+  u32 now_lo = (u32)ktime_get_ns();  // Lower 32 bits only
+  
+  if (gpio_value) {
+    // Rising edge
+    echo1_start_lo = now_lo;
+  } else {
+    // Falling edge
+    if (echo1_start_lo != 0) {
+      // Subtraction handles wraparound automatically
+      u32 duration_ns = now_lo - echo1_start_lo;
+      echo1_duration_us = duration_ns / 1000;
+      
+      printk(KERN_DEBUG "ECHO1: %u us\n", echo1_duration_us);
+      echo1_start_lo = 0;
+    }
   }
-  echo1_state = !echo1_state;
+  
   return IRQ_HANDLED;
 }
 
-static irqreturn_t echo2_rise(int irq, void *dev_id) {
-  //printk(KERN_ALERT "ECHO2 RISE");
-if (!echo2_state){
-    echo2_time = jiffies;
-  }else{
-    echo2_time = jiffies - echo2_time;
-    printk(KERN_ALERT "ECHO2 Time jiffies: %d", echo2_time);
+static irqreturn_t echo2_irq(int irq, void *dev_id) {
+  int gpio_value = gpio_get_value(GPIO_ECHO2);
+  u32 now_lo = (u32)ktime_get_ns();  // Lower 32 bits only
+  
+  if (gpio_value) {
+    // Rising edge
+    echo2_start_lo = now_lo;
+  } else {
+    // Falling edge
+    if (echo2_start_lo != 0) {
+      // Subtraction handles wraparound automatically
+      u32 duration_ns = now_lo - echo2_start_lo;
+      echo2_duration_us = duration_ns / 1000;
+      
+      printk(KERN_DEBUG "ECHO2: %u us\n", echo2_duration_us);
+      echo2_start_lo = 0;
+    }
   }
-  echo1_state = !echo1_state;  return IRQ_HANDLED;
+  
+  return IRQ_HANDLED;
 }
 
-static irqreturn_t echo3_rise(int irq, void *dev_id) {
-  //printk(KERN_ALERT "ECHO3 RISE");
-  if (!echo3_state){
-    echo3_time = jiffies;
-  }else{
-    echo3_time = jiffies - echo3_time;
-    printk(KERN_ALERT "ECHO3 Time jiffies: %d", echo3_time);
+static irqreturn_t echo3_irq(int irq, void *dev_id) {
+  int gpio_value = gpio_get_value(GPIO_ECHO3);
+  u32 now_lo = (u32)ktime_get_ns();  // Lower 32 bits only
+  
+  if (gpio_value) {
+    // Rising edge
+    echo3_start_lo = now_lo;
+  } else {
+    // Falling edge
+    if (echo3_start_lo != 0) {
+      // Subtraction handles wraparound automatically
+      u32 duration_ns = now_lo - echo3_start_lo;
+      echo3_duration_us = duration_ns / 1000;
+      
+      printk(KERN_DEBUG "ECHO3: %u us\n", echo3_duration_us);
+      echo3_start_lo = 0;
+    }
   }
-  echo1_state = !echo1_state;  return IRQ_HANDLED;
+  
+  return IRQ_HANDLED;
 }
-
 
 static int sonar_init(void) {
   // First set up the timer
@@ -189,21 +223,21 @@ static int sonar_init(void) {
 
   // request IRQs for les buttons
   irq_echo1 = gpio_to_irq(GPIO_ECHO1);
-  result = request_irq(irq_echo1, echo1_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_1", NULL);
+  result = request_irq(irq_echo1, echo1_irq, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_1", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO1 RISING\n");
     return result;
   }
 
   irq_echo2 = gpio_to_irq(GPIO_ECHO2);
-  result = request_irq(irq_echo2, echo2_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING) , "echo_2", NULL);
+  result = request_irq(irq_echo2, echo2_irq, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING) , "echo_2", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO2 RISING\n");
     return result;
   }
 
   irq_echo3 = gpio_to_irq(GPIO_ECHO3);
-  result = request_irq(irq_echo3, echo3_rise, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_3", NULL);
+  result = request_irq(irq_echo3, echo3_irq, (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING), "echo_3", NULL);
   if (result) {
     printk(KERN_ALERT "Failed to request IRQ for ECHO3 RISING\n");
     return result;
@@ -231,11 +265,11 @@ static void sonar_exit(void) {
 
   // freedom
   if (irq_echo1)
-    free_irq(echo1_rise, NULL);
+    free_irq(echo1_irq, NULL);
   if (irq_echo2)
-    free_irq(echo2_rise, NULL);
+    free_irq(echo2_irq, NULL);
   if (irq_echo3)
-    free_irq(echo3_rise, NULL);
+    free_irq(echo3_irq, NULL);
 
   gpio_free(GPIO_TRIG1);
   gpio_free(GPIO_TRIG2);
@@ -255,8 +289,7 @@ static int sonar_release(struct inode *inode, struct file *filp) {
   return 0;
 }
 
-static ssize_t sonar_read(struct file *filep, char __user *buffer,
-                              size_t len, loff_t *offset) {
+static ssize_t sonar_read(struct file *filep, char __user *buffer, size_t len, loff_t *offset) {
   char buf[512] = {0};
   int count = 0;
 
@@ -264,9 +297,9 @@ static ssize_t sonar_read(struct file *filep, char __user *buffer,
     return 0;
 
   // TODO: Print which lights are active
-  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO1: %d", echo1_time);
-  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO2: %d", echo2_time);
-  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO3: %d", echo3_time);
+  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO1: %d ", echo1_duration_us);
+  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO2: %d ", echo2_duration_us);
+  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO3: %d ", echo3_duration_us);
   // then sent that to the user
   if (copy_to_user(buffer, buf, count))
     return -EFAULT;
@@ -275,16 +308,21 @@ static ssize_t sonar_read(struct file *filep, char __user *buffer,
   return count;
 }
 
-static ssize_t sonar_write(struct file *filp, const char *buf, size_t count,
-                               loff_t *f_pos) {
+static ssize_t sonar_write(struct file *filp, const char *buf, size_t count, loff_t *f_pos) {
   return count;
 }
 
 static void timer_handler(struct timer_list *t) {
     my_timer->state = !my_timer->state;
+    //printk(KERN_ALERT "timer state: %d: %d", my_timer->state,jiffies_to_msecs(jiffies));
     gpio_set_value(GPIO_TRIG1, my_timer->state);
     gpio_set_value(GPIO_TRIG2, my_timer->state);
     gpio_set_value(GPIO_TRIG3, my_timer->state);
    
-  mod_timer(&my_timer->timer, jiffies + msecs_to_jiffies(90 - 80*(my_timer->state)));
+  if(my_timer->state == 1){
+    mod_timer(&my_timer->timer, jiffies + usecs_to_jiffies(10));
+  }
+  if(my_timer->state == 0){
+    mod_timer(&my_timer->timer, jiffies + msecs_to_jiffies(100));
+  }
 }
