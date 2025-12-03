@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QPropertyAnimation>
+#include <QTimer>
 
 // Define the Wrapper Class
 // This is needed to add animation to a sprite
@@ -149,13 +150,13 @@ int main(int argc, char *argv[]) {
     tree3->setPos(600, 150); // put tree off screen
 
     // animation for tree 1
-    QPropertyAnimation *animation = new QPropertyAnimation(tree1, "pos");
-    animation->setDuration(5000); // 5 seconds to move down
-    animation->setStartValue(QPointF(200, -150)); // Start above screen at x=200
-    animation->setEndValue(QPointF(200, 1150));  // End below screen
-    animation->setEasingCurve(QEasingCurve::Linear);
-    animation->setLoopCount(-1);
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    QPropertyAnimation *animation1 = new QPropertyAnimation(tree1, "pos");
+    animation1->setDuration(5000); // 5 seconds to move down
+    animation1->setStartValue(QPointF(200, -150)); // Start above screen at x=200
+    animation1->setEndValue(QPointF(200, 1150));  // End below screen
+    animation1->setEasingCurve(QEasingCurve::Linear);
+    animation1->setLoopCount(-1);
+    animation1->start(QAbstractAnimation::DeleteWhenStopped);
 
     // animation for tree 2
     QPropertyAnimation *animation2 = new QPropertyAnimation(tree2, "pos");
@@ -175,31 +176,29 @@ int main(int argc, char *argv[]) {
     animation3->setLoopCount(-1);
     animation3->start(QAbstractAnimation::DeleteWhenStopped);
 
+    // Collision checking
+    QTimer *colTimer = new QTimer(&scene);
+    QObject::connect(colTimer, &QTimer::timeout, [&](){
+        for (auto* it : scene.items()){
+            if (it != guy && it->collidesWithItem(guy)){
+                animation1->stop();
+                animation2->stop();
+                animation3->stop();
+                colTimer->stop();
+            }
+        }
+    });
+    colTimer->start(10);
+
     // Setup View with keyboard controls
     KeyboardControlledView view(&scene, guy);
     view.setRenderHint(QPainter::Antialiasing);
     scene.setSceneRect(0, 0, 500, 1000);
     view.show();
 
+
     return a.exec();
 }
 
 // This is needed for now because it's in one main.cpp file
 #include "main.moc"
-
-// Animation Examples
-  // // Animation A: Movement
-  // QPropertyAnimation *moveAnim = new QPropertyAnimation(guy, "pos");
-  // moveAnim->setDuration(3000);
-  // moveAnim->setStartValue(QPointF(0, 0));
-  // moveAnim->setEndValue(QPointF(200, 200));
-  // moveAnim->setLoopCount(-1); // Loop forever
-  // moveAnim->start();
-
-  // // Animation B: Rotation (Spinning)
-  // QPropertyAnimation *spinAnim = new QPropertyAnimation(guy, "rotation");
-  // spinAnim->setDuration(1000);
-  // spinAnim->setStartValue(0);
-  // spinAnim->setEndValue(360);
-  // spinAnim->setLoopCount(-1);
-  // spinAnim->start();
