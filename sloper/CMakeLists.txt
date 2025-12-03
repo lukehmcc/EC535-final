@@ -15,7 +15,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Gui)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
+        src/main.cpp
 
 
 
@@ -40,6 +40,7 @@ else()
     else()
         add_executable(sloper
             ${PROJECT_SOURCES}
+            src/animatableimage.h src/animatableimage.cpp
         )
     endif()
 endif()

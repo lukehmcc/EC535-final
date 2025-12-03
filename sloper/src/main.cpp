@@ -162,6 +162,19 @@ private:
     bool paused;
 };
 
+// Helper to start animation with config values
+QPropertyAnimation *startAnimation(AnimatableImage *i, int x, int y_offset, int duration)
+{
+    QPropertyAnimation *a = new QPropertyAnimation(i, "pos");
+    a->setDuration(duration);               // 5 seconds to move down
+    a->setStartValue(QPointF(x, y_offset)); // Start above screen at x=200
+    a->setEndValue(QPointF(x, 1150));       // End below screen
+    a->setEasingCurve(QEasingCurve::Linear);
+    a->setLoopCount(-1);
+    a->start(QAbstractAnimation::DeleteWhenStopped);
+    return a;
+}
+
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
 
@@ -177,52 +190,28 @@ int main(int argc, char *argv[]) {
   AnimatableImage *tree1 = loadImage("../static/pine.png", 150, 150);
   scene.addItem(tree1);
   tree1->setPos(600, 150); // put tree off screen
+  QPropertyAnimation *animation1 = startAnimation(tree1, 50, -850, 8000);
 
   // tree2
   AnimatableImage *tree2 = loadImage("../static/pine.png", 150, 150);
   scene.addItem(tree2);
   tree2->setPos(600, 150); // put tree off screen
+  QPropertyAnimation *animation2 = startAnimation(tree2, 200, -150, 5000);
 
   // tree 3
   AnimatableImage *tree3 = loadImage("../static/pine.png", 150, 150);
   scene.addItem(tree3);
   tree3->setPos(600, 150); // put tree off screen
-
-  // animation for tree 1
-  QPropertyAnimation *animation1 = new QPropertyAnimation(tree1, "pos");
-  animation1->setDuration(5000);                 // 5 seconds to move down
-  animation1->setStartValue(QPointF(200, -150)); // Start above screen at x=200
-  animation1->setEndValue(QPointF(200, 1150));   // End below screen
-  animation1->setEasingCurve(QEasingCurve::Linear);
-  animation1->setLoopCount(-1);
-  animation1->start(QAbstractAnimation::DeleteWhenStopped);
-
-  // animation for tree 2
-  QPropertyAnimation *animation2 = new QPropertyAnimation(tree2, "pos");
-  animation2->setDuration(8000);                // 5 seconds to move down
-  animation2->setStartValue(QPointF(50, -450)); // Start above screen at x=200
-  animation2->setEndValue(QPointF(50, 1150));   // End below screen
-  animation2->setEasingCurve(QEasingCurve::Linear);
-  animation2->setLoopCount(-1);
-  animation2->start(QAbstractAnimation::DeleteWhenStopped);
-
-  // animation for tree 3
-  QPropertyAnimation *animation3 = new QPropertyAnimation(tree3, "pos");
-  animation3->setDuration(8000);                 // 5 seconds to move down
-  animation3->setStartValue(QPointF(350, -950)); // Start above screen at x=200
-  animation3->setEndValue(QPointF(350, 1150));   // End below screen
-  animation3->setEasingCurve(QEasingCurve::Linear);
-  animation3->setLoopCount(-1);
-  animation3->start(QAbstractAnimation::DeleteWhenStopped);
+  QPropertyAnimation *animation3 = startAnimation(tree3, 350, -1200, 12000);
 
   // Define the collsion clock
   QTimer *colisionClock = new QTimer(&scene);
 
-  // And now we can define the game logic
+  // define the game logic
   GameState *state
       = new GameState(guy, tree1, tree2, tree3, colisionClock, animation1, animation2, animation3);
 
-  //
+  // Start the collision checker
   QObject::connect(colisionClock, &QTimer::timeout, [&]() {
       for (auto *it : scene.items()) {
           if (it != guy && it->collidesWithItem(guy)) {
@@ -230,7 +219,7 @@ int main(int argc, char *argv[]) {
           }
       }
   });
-  colisionClock->start(10);
+  colisionClock->start(10); // start polling
 
   // Setup View with keyboard controls
   KeyboardControlledView view(&scene, guy);
