@@ -62,9 +62,12 @@ int main(int argc, char *argv[])
     colisionClock->start(10); // start polling
 
     // Setup View with keyboard controls
-    KeyboardControlledView view(&scene, guy);
+    KeyboardControlledView view(&scene, state);
     view.setRenderHint(QPainter::Antialiasing);
     scene.setSceneRect(0, 0, 500, 1000);
+    view.setFixedSize(500, 1000); // match sceneRect
+    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.show();
 
     return a.exec();

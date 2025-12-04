@@ -1,6 +1,8 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
+
 #include "animatableimage.h"
+#include "gamestate.h"
 
 #ifndef KEYBOARDCONTROLLEDVIEW_H
 #define KEYBOARDCONTROLLEDVIEW_H
@@ -11,13 +13,13 @@ class KeyboardControlledView : public QGraphicsView
     Q_OBJECT
 
 public:
-    KeyboardControlledView(QGraphicsScene *scene, AnimatableImage *skier);
+    KeyboardControlledView(QGraphicsScene *scene, GameState *state);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    AnimatableImage *m_skier;
+    GameState *state;
     qreal m_stepSize;
     bool is_left = false;
     bool is_right = false;

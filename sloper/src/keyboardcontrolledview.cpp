@@ -1,8 +1,8 @@
 #include "keyboardcontrolledview.h"
 
-KeyboardControlledView::KeyboardControlledView(QGraphicsScene *scene, AnimatableImage *skier)
+KeyboardControlledView::KeyboardControlledView(QGraphicsScene *scene, GameState *state)
     : QGraphicsView(scene)
-    , m_skier(skier)
+    , state(state)
 {
     // enable keyboard focus
     setFocusPolicy(Qt::StrongFocus);
@@ -13,29 +13,11 @@ KeyboardControlledView::KeyboardControlledView(QGraphicsScene *scene, Animatable
 void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
 {
     // get current position
-    QPointF currentPos = m_skier->pos();
+    QPointF currentPos = state->guy->pos();
     QPointF newPos = currentPos;
 
     // handle arrow key movement
     switch (event->key()) {
-    case Qt::Key_Up:
-        if (is_bottom) {
-            is_bottom = false;
-            newPos.setY(currentPos.y() - m_stepSize);
-        } else if (!is_top) {
-            is_top = true;
-            newPos.setY(currentPos.y() - m_stepSize);
-        }
-        break;
-    case Qt::Key_Down:
-        if (is_top) {
-            is_top = false;
-            newPos.setY(currentPos.y() + m_stepSize);
-        } else if (!is_bottom) {
-            is_bottom = true;
-            newPos.setY(currentPos.y() + m_stepSize);
-        }
-        break;
     case Qt::Key_Left:
         if (is_right) {
             is_right = false;
@@ -60,5 +42,5 @@ void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
     }
 
     // update skier position
-    m_skier->setPos(newPos);
+    state->guy->setPos(newPos);
 }
