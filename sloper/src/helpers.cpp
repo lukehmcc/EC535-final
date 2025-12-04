@@ -1,9 +1,7 @@
-#include <QDebug>
-#include <QPropertyAnimation>
+#include "helpers.h"
 
-#include "animatableimage.h"
 // image loader funciton
-AnimatableImage *loadImage(QString path, int width, int height)
+AnimatableImage *Helpers::loadImage(QString path, int width, int height)
 {
     QPixmap pix(path);
 
@@ -21,7 +19,7 @@ AnimatableImage *loadImage(QString path, int width, int height)
 }
 
 // Helper to start animation with config values
-QPropertyAnimation *startAnimation(AnimatableImage *i, int x, int y_offset, int duration)
+QPropertyAnimation *Helpers::startAnimation(AnimatableImage *i, int x, int y_offset, int duration)
 {
     QPropertyAnimation *a = new QPropertyAnimation(i, "pos");
     a->setDuration(duration);               // 5 seconds to move down

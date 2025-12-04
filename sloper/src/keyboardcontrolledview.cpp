@@ -16,6 +16,11 @@ void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
     QPointF currentPos = state->guy->pos();
     QPointF newPos = currentPos;
 
+    // if any key event happens you wanna restart (if it's stopped)
+    if (state->isPaused()) {
+        state->reset();
+    }
+
     // handle arrow key movement
     switch (event->key()) {
     case Qt::Key_Left:

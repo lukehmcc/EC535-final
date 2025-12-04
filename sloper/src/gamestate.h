@@ -1,3 +1,4 @@
+#include <QElapsedTimer>
 #include <QPropertyAnimation>
 #include <QTimer>
 #include "animatableimage.h"
@@ -13,6 +14,7 @@ public:
               AnimatableImage *t2,
               AnimatableImage *t3,
               QTimer *c,
+              QElapsedTimer *e,
               QPropertyAnimation *a1,
               QPropertyAnimation *a2,
               QPropertyAnimation *a3);
@@ -24,14 +26,17 @@ public:
     QPropertyAnimation *animation2;
     QPropertyAnimation *animation3;
     QTimer *colTimer;
+    QElapsedTimer *elapsed;
     bool isPaused();
     // Function that stops the game
     void stop();
     // Resets the game to intial state (doesn't clear clock)
     void reset();
+    int getBestScore();
 
 private:
     bool paused;
+    int bestScore = 0;
 };
 
 #endif // GAMESTATE_H
