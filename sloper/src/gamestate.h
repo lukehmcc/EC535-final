@@ -14,10 +14,7 @@ public:
               AnimatableImage *t2,
               AnimatableImage *t3,
               QTimer *c,
-              QElapsedTimer *e,
-              QPropertyAnimation *a1,
-              QPropertyAnimation *a2,
-              QPropertyAnimation *a3);
+              QElapsedTimer *e);
     AnimatableImage *guy;
     AnimatableImage *tree1;
     AnimatableImage *tree2;
@@ -36,7 +33,10 @@ public:
 
 private:
     bool paused;
-    int bestScore = 0;
+    int bestScore;
+    int animationTime;
+    QTimer *animationTimer;
+    void kickStartTrees();
 };
 
 #endif // GAMESTATE_H
