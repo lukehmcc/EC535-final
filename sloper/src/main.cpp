@@ -61,6 +61,10 @@ int main(int argc, char *argv[])
     QElapsedTimer *elapsed = new QElapsedTimer();
     elapsed->start(); // keeps track of how long since it started
 
+    // title
+    QGraphicsTextItem *title = scene.addText("Wizard Ski");
+    title->setPos(250, 500);
+
     // define the game logic
     GameState *state
         = new GameState(guy, tree1, tree2, tree3, tree4, tree5, tree6, colisionClock, elapsed);
@@ -73,8 +77,14 @@ int main(int argc, char *argv[])
                 state->stop();
             }
         }
+        // add title screen hover
+        if (!state->titleScreen && title) {
+            title->hide();
+        }
         // update timer
-        timerText->setPlainText(QString::number(elapsed->elapsed() / 100));
+        if (!state->paused) {
+            timerText->setPlainText(QString::number(elapsed->elapsed() / 100));
+        }
         bestScoreText->setPlainText("Best Score: " + QString::number(state->getBestScore() / 100));
     });
     colisionClock->start(10); // start polling

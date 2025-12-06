@@ -40,13 +40,15 @@ public:
     void reset();
     int getBestScore();
     void putTreesOffScreen();
+    bool paused;
+    bool titleScreen;
 
 private:
-    bool paused;
     int bestScore;
     int animationTime;
     QTimer *animationTimer;
     void kickStartTrees();
+    bool isFirstBatch;
 };
 
 #endif // GAMESTATE_H

@@ -25,8 +25,19 @@ GameState::GameState(AnimatableImage *g,
     , colTimer(c)
     , elapsed(e)
 {
+    // null
+    animation1 = nullptr;
+    animation2 = nullptr;
+    animation3 = nullptr;
+    animation4 = nullptr;
+    animation5 = nullptr;
+    animation6 = nullptr;
+    animationTimer = nullptr;
+
+    // normal init
     bestScore = 0; // init
-    kickStartTrees();
+    paused = true;
+    titleScreen = true;
 }
 
 bool GameState::isPaused()
@@ -37,27 +48,23 @@ bool GameState::isPaused()
 void GameState::stop()
 {
     paused = true;
-    if (animation1) {
+    if (animation1)
         animation1->stop();
-    }
-    if (animation2) {
+    if (animation2)
         animation2->stop();
-    }
-    if (animation3) {
+    if (animation3)
         animation3->stop();
-    }
-    if (animation4) {
+    if (animation4)
         animation4->stop();
-    }
-    animationTimer->stop();
-    if (animation5) {
+    if (animation5)
         animation5->stop();
-    }
-    if (animation6) {
+    if (animation6)
         animation6->stop();
-    }
-    colTimer->stop();
-    if (elapsed->elapsed() > bestScore) {
+    if (animationTimer)
+        animationTimer->stop();
+    if (colTimer)
+        colTimer->stop();
+    if (elapsed && elapsed->elapsed() > bestScore) {
         bestScore = elapsed->elapsed();
     }
 }
@@ -66,6 +73,7 @@ void GameState::reset()
 {
     putTreesOffScreen();
     paused = false;
+    titleScreen = false;
     elapsed->restart();
     kickStartTrees();
     colTimer->start(10);
@@ -87,7 +95,7 @@ static const std::array<std::array<int, 3>, 50> combos{
      {-950, -550, -150},  {-900, -700, -300},  {-850, -500, -200},  {-800, -600, -400},
      {-750, -450, -150},  {-700, -700, -350},  {-650, -750, -250},  {-600, -500, -300},
      {-550, -850, -400},  {-500, -650, -200},  {-450, -750, -350},  {-400, -600, -150},
-     {-350, -700, -250},  {-300, -550, -450},  {-250, -650, -350},  {-200, -750, -400},
+     {-350, -700, -250},  {-150, -550, -450},  {-250, -650, -350},  {-200, -750, -400},
      {-1150, -650, -250}, {-1100, -700, -300}, {-1050, -600, -350}, {-1000, -750, -200},
      {-950, -500, -400},  {-900, -550, -450},  {-850, -600, -150},  {-800, -650, -350},
      {-750, -700, -250},  {-700, -450, -300},  {-650, -500, -400},  {-600, -850, -200},
@@ -102,57 +110,58 @@ static std::mt19937 rng(std::random_device{}());
 // restarts the tree animations
 void GameState::kickStartTrees()
 {
+    // 1. Clean up existing timer if this function is called multiple times
+    if (animationTimer) {
+        animationTimer->stop();
+        animationTimer->deleteLater();
+    }
+
     animationTime = 10000; // 10s
-    // First batch (0, 200, 350)
-    auto [p1, p2, p3] = combos[rng() % combos.size()];
-    qInfo() << "Tree set: " << p1 << " " << p2 << " " << p3;
-    int t1 = proportionalTime(-1200, p1, animationTime);
-    int t2 = proportionalTime(-1200, p2, animationTime);
-    int t3 = proportionalTime(-1200, p3, animationTime);
-    animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
-    animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
-    animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
-
-    // Second batch offset by half
-    QTimer::singleShot(animationTime / 2, [this]() {
-        auto [p4, p5, p6] = combos[rng() % combos.size()];
-        qInfo() << "Tree set: " << p4 << " " << p5 << " " << p6;
-        int t4 = proportionalTime(-1200, p4, animationTime);
-        int t5 = proportionalTime(-1200, p5, animationTime);
-        int t6 = proportionalTime(-1200, p6, animationTime);
-        animation4 = Helpers().startAnimation(tree4, 50, p4, t4);
-        animation5 = Helpers().startAnimation(tree5, 200, p5, t5);
-        animation6 = Helpers().startAnimation(tree6, 350, p6, t6);
-    });
-
-    // Timer alternates between the two groups
     animationTimer = new QTimer();
+
+    // checks if it is in group A or B of tree fires
+    isFirstBatch = true;
+
     QObject::connect(animationTimer, &QTimer::timeout, [this]() {
         auto [p1, p2, p3] = combos[rng() % combos.size()];
-        qInfo() << "Tree set: " << p1 << " " << p2 << " " << p3;
+
+        // Calculate durations based on current speed
+        int t1 = proportionalTime(-1200, p1, animationTime);
+        int t2 = proportionalTime(-1200, p2, animationTime);
+        int t3 = proportionalTime(-1200, p3, animationTime);
+
+        if (isFirstBatch) {
+            qInfo() << "Tree set A: " << p1 << " " << p2 << " " << p3;
+            animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
+            animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
+            animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
+        } else {
+            qInfo() << "Tree set B: " << p1 << " " << p2 << " " << p3;
+            animation4 = Helpers().startAnimation(tree4, 50, p1, t1);
+            animation5 = Helpers().startAnimation(tree5, 200, p2, t2);
+            animation6 = Helpers().startAnimation(tree6, 350, p3, t3);
+
+            // only speed up on full cycles
+            animationTime = std::max(animationTime - 250, 100);
+        }
+        isFirstBatch = !isFirstBatch;
+        animationTimer->setInterval(animationTime / 2);
+    });
+    //	Fire first batch first
+    {
+        auto [p1, p2, p3] = combos[rng() % combos.size()];
         int t1 = proportionalTime(-1200, p1, animationTime);
         int t2 = proportionalTime(-1200, p2, animationTime);
         int t3 = proportionalTime(-1200, p3, animationTime);
         animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
         animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
         animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
-        // Second batch offset by half
-        QTimer::singleShot(animationTime / 2, [this]() {
-            auto [p4, p5, p6] = combos[rng() % combos.size()];
-            qInfo() << "Tree set: " << p4 << " " << p5 << " " << p6;
-            int t4 = proportionalTime(-1200, p4, animationTime);
-            int t5 = proportionalTime(-1200, p5, animationTime);
-            int t6 = proportionalTime(-1200, p6, animationTime);
-            animation4 = Helpers().startAnimation(tree4, 50, p4, t4);
-            animation5 = Helpers().startAnimation(tree5, 200, p5, t5);
-            animation6 = Helpers().startAnimation(tree6, 350, p6, t6);
-        });
-        animationTime = std::max(animationTime - 100, 100);
-        animationTimer->setInterval(animationTime);
-    });
-    animationTimer->start(animationTime);
-}
+        isFirstBatch = false; // Next one should be Batch B
+    }
 
+    // start next batch timer
+    animationTimer->start(animationTime / 2);
+}
 // put all the trees offscreen
 void GameState::putTreesOffScreen()
 {
