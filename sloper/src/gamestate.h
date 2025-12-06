@@ -39,6 +39,7 @@ public:
     // Resets the game to intial state (doesn't clear clock)
     void reset();
     int getBestScore();
+    void putTreesOffScreen();
 
 private:
     bool paused;
