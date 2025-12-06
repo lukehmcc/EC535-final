@@ -9,6 +9,9 @@ GameState::GameState(AnimatableImage *g,
                      AnimatableImage *t1,
                      AnimatableImage *t2,
                      AnimatableImage *t3,
+                     AnimatableImage *t4,
+                     AnimatableImage *t5,
+                     AnimatableImage *t6,
                      QTimer *c,
                      QElapsedTimer *e)
     : paused(false)
@@ -16,11 +19,13 @@ GameState::GameState(AnimatableImage *g,
     , tree1(t1)
     , tree2(t2)
     , tree3(t3)
+    , tree4(t4)
+    , tree5(t5)
+    , tree6(t6)
     , colTimer(c)
     , elapsed(e)
 {
-    bestScore = 0;         // init
-    animationTime = 10000; // 6s
+    bestScore = 0; // init
     kickStartTrees();
 }
 
@@ -41,7 +46,16 @@ void GameState::stop()
     if (animation3) {
         animation3->stop();
     }
+    if (animation4) {
+        animation4->stop();
+    }
     animationTimer->stop();
+    if (animation5) {
+        animation5->stop();
+    }
+    if (animation6) {
+        animation6->stop();
+    }
     colTimer->stop();
     if (elapsed->elapsed() > bestScore) {
         bestScore = elapsed->elapsed();
@@ -51,7 +65,6 @@ void GameState::stop()
 void GameState::reset()
 {
     paused = false;
-    animationTime = 10000; // 6s
     elapsed->restart();
     kickStartTrees();
     colTimer->start(10);
@@ -88,6 +101,8 @@ static std::mt19937 rng(std::random_device{}());
 // restarts the tree animations
 void GameState::kickStartTrees()
 {
+    animationTime = 10000; // 10s
+    // First batch (0, 200, 350)
     auto [p1, p2, p3] = combos[rng() % combos.size()];
     int t1 = proportionalTime(-1200, p1, animationTime);
     int t2 = proportionalTime(-1200, p2, animationTime);
@@ -96,17 +111,41 @@ void GameState::kickStartTrees()
     animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
     animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
 
-    animationTimer = new QTimer();
-    QObject::connect(animationTimer, &QTimer::timeout, [this]() {
-        auto [p1, p2, p3] = combos[rng() % combos.size()];
-        int t1 = proportionalTime(-1200, p1, animationTime);
-        int t2 = proportionalTime(-1200, p2, animationTime);
-        int t3 = proportionalTime(-1200, p3, animationTime);
-        animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
-        animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
-        animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
-        animationTime = std::max(animationTime - 100, 100);
-        animationTimer->setInterval(animationTime);
+    // Second batch offset by half
+    QTimer::singleShot(animationTime / 2, [this]() {
+        auto [p4, p5, p6] = combos[rng() % combos.size()];
+        int t4 = proportionalTime(-1200, p4, animationTime);
+        int t5 = proportionalTime(-1200, p5, animationTime);
+        int t6 = proportionalTime(-1200, p6, animationTime);
+        animation4 = Helpers().startAnimation(tree4, 50, p4, t4);
+        animation5 = Helpers().startAnimation(tree5, 200, p5, t5);
+        animation6 = Helpers().startAnimation(tree6, 350, p6, t6);
     });
-    animationTimer->start(animationTime);
+
+    // Timer alternates between the two groups
+    bool useFirst = true;
+    animationTimer = new QTimer();
+    QObject::connect(animationTimer, &QTimer::timeout, [this, &useFirst]() {
+        if (useFirst) {
+            auto [p1, p2, p3] = combos[rng() % combos.size()];
+            int t1 = proportionalTime(-1200, p1, animationTime);
+            int t2 = proportionalTime(-1200, p2, animationTime);
+            int t3 = proportionalTime(-1200, p3, animationTime);
+            animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
+            animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
+            animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
+        } else {
+            auto [p4, p5, p6] = combos[rng() % combos.size()];
+            int t4 = proportionalTime(-1200, p4, animationTime);
+            int t5 = proportionalTime(-1200, p5, animationTime);
+            int t6 = proportionalTime(-1200, p6, animationTime);
+            animation4 = Helpers().startAnimation(tree4, 50, p4, t4);
+            animation5 = Helpers().startAnimation(tree5, 200, p5, t5);
+            animation6 = Helpers().startAnimation(tree6, 350, p6, t6);
+        }
+        useFirst = !useFirst;
+        animationTime = std::max(animationTime - 100, 100);
+        animationTimer->setInterval(animationTime / 2);
+    });
+    animationTimer->start(animationTime / 2);
 }
