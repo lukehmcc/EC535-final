@@ -26,7 +26,6 @@ QPropertyAnimation *Helpers::startAnimation(AnimatableImage *i, int x, int y_off
     a->setStartValue(QPointF(x, y_offset)); // Start above screen at x=200
     a->setEndValue(QPointF(x, 1150));       // End below screen
     a->setEasingCurve(QEasingCurve::Linear);
-    a->setLoopCount(-1);
-    a->start(QAbstractAnimation::DeleteWhenStopped);
+    a->start();
     return a;
 }

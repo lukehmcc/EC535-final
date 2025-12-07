@@ -29,19 +29,26 @@ int main(int argc, char *argv[])
     AnimatableImage *tree1 = Helpers().loadImage("../static/pine.png", 150, 150);
     scene.addItem(tree1);
     tree1->setPos(600, 150); // put tree off screen
-    QPropertyAnimation *animation1 = Helpers().startAnimation(tree1, 50, -850, 8000);
-
     // tree2
     AnimatableImage *tree2 = Helpers().loadImage("../static/pine.png", 150, 150);
     scene.addItem(tree2);
     tree2->setPos(600, 150); // put tree off screen
-    QPropertyAnimation *animation2 = Helpers().startAnimation(tree2, 200, -150, 5000);
-
     // tree 3
     AnimatableImage *tree3 = Helpers().loadImage("../static/pine.png", 150, 150);
     scene.addItem(tree3);
     tree3->setPos(600, 150); // put tree off screen
-    QPropertyAnimation *animation3 = Helpers().startAnimation(tree3, 350, -1200, 12000);
+    // tree 4
+    AnimatableImage *tree4 = Helpers().loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree4);
+    tree4->setPos(600, 150); // put tree off screen
+    // tree 5
+    AnimatableImage *tree5 = Helpers().loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree5);
+    tree5->setPos(600, 150); // put tree off screen
+    // tree 6
+    AnimatableImage *tree6 = Helpers().loadImage("../static/pine.png", 150, 150);
+    scene.addItem(tree6);
+    tree6->setPos(600, 150); // put tree off screen
 
     // Define the collsion clock
     QTimer *colisionClock = new QTimer(&scene);
@@ -54,16 +61,13 @@ int main(int argc, char *argv[])
     QElapsedTimer *elapsed = new QElapsedTimer();
     elapsed->start(); // keeps track of how long since it started
 
+    // title
+    QGraphicsTextItem *title = scene.addText("Wizard Ski");
+    title->setPos(250, 500);
+
     // define the game logic
-    GameState *state = new GameState(guy,
-                                     tree1,
-                                     tree2,
-                                     tree3,
-                                     colisionClock,
-                                     elapsed,
-                                     animation1,
-                                     animation2,
-                                     animation3);
+    GameState *state
+        = new GameState(guy, tree1, tree2, tree3, tree4, tree5, tree6, colisionClock, elapsed);
 
     // Start the time based watcher
     QObject::connect(colisionClock, &QTimer::timeout, [&]() {
@@ -73,8 +77,14 @@ int main(int argc, char *argv[])
                 state->stop();
             }
         }
+        // add title screen hover
+        if (!state->titleScreen && title) {
+            title->hide();
+        }
         // update timer
-        timerText->setPlainText(QString::number(elapsed->elapsed() / 100));
+        if (!state->paused) {
+            timerText->setPlainText(QString::number(elapsed->elapsed() / 100));
+        }
         bestScoreText->setPlainText("Best Score: " + QString::number(state->getBestScore() / 100));
     });
     colisionClock->start(10); // start polling

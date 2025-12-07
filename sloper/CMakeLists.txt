@@ -43,7 +43,6 @@ else()
             src/animatableimage.h src/animatableimage.cpp
             src/gamestate.h src/gamestate.cpp
             src/keyboardcontrolledview.h src/keyboardcontrolledview.cpp
-            src/h2.cpp
             src/helpers.h src/helpers.cpp
         )
     endif()
