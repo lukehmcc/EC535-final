@@ -15,6 +15,9 @@ class SonarControlledView : public QGraphicsView
 public:
     SonarControlledView(QGraphicsScene *scene, GameState *state);
 
+protected:
+    void sonarPoll(QKeyEvent *event) override;
+
 private:
     GameState *state;
     qreal m_stepSize;
