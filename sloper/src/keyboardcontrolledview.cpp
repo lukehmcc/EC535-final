@@ -7,7 +7,7 @@ KeyboardControlledView::KeyboardControlledView(QGraphicsScene *scene, GameState 
     // enable keyboard focus
     setFocusPolicy(Qt::StrongFocus);
     // mvement step size (in pixels)
-    m_stepSize = 150.0;
+    m_stepSize = 70.0;
 };
 
 void KeyboardControlledView::keyPressEvent(QKeyEvent *event)

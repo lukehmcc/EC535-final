@@ -21,32 +21,32 @@ int main(int argc, char *argv[])
 
     // Load images & make them animatable
     // sources from the build/ directory
-    AnimatableImage *guy = Helpers().loadImage("../static/ski.jpg", 150, 150);
+    AnimatableImage *guy = Helpers().loadImage("../static/wizard.png", 70, 70);
     scene.addItem(guy);
-    guy->setPos(200, 700);
+    guy->setPos(120, 300);
 
     // tree1
-    AnimatableImage *tree1 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree1 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree1);
     tree1->setPos(600, 150); // put tree off screen
     // tree2
-    AnimatableImage *tree2 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree2 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree2);
     tree2->setPos(600, 150); // put tree off screen
     // tree 3
-    AnimatableImage *tree3 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree3 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree3);
     tree3->setPos(600, 150); // put tree off screen
     // tree 4
-    AnimatableImage *tree4 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree4 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree4);
     tree4->setPos(600, 150); // put tree off screen
     // tree 5
-    AnimatableImage *tree5 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree5 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree5);
     tree5->setPos(600, 150); // put tree off screen
     // tree 6
-    AnimatableImage *tree6 = Helpers().loadImage("../static/pine.png", 150, 150);
+    AnimatableImage *tree6 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree6);
     tree6->setPos(600, 150); // put tree off screen
 
@@ -55,15 +55,15 @@ int main(int argc, char *argv[])
 
     // Score counter cock
     QGraphicsTextItem *timerText = scene.addText("0");
-    timerText->setPos(420, 10);
+    timerText->setPos(240, 20);
     QGraphicsTextItem *bestScoreText = scene.addText("Best Score: 0");
-    bestScoreText->setPos(300, 10);
+    bestScoreText->setPos(100, 20);
     QElapsedTimer *elapsed = new QElapsedTimer();
     elapsed->start(); // keeps track of how long since it started
 
     // title
     QGraphicsTextItem *title = scene.addText("Wizard Ski");
-    title->setPos(250, 500);
+    title->setPos(126, 240);
 
     // define the game logic
     GameState *state
@@ -92,11 +92,12 @@ int main(int argc, char *argv[])
     // Setup View with keyboard controls
     KeyboardControlledView view(&scene, state);
     view.setRenderHint(QPainter::Antialiasing);
-    scene.setSceneRect(0, 0, 500, 1000);
-    view.setFixedSize(500, 1000); // match sceneRect
+    scene.setSceneRect(0, 0, 272, 480);
+    view.setFixedSize(480, 272); // match sceneRect
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.show();
+    view.rotate(90);
 
     return a.exec();
 }

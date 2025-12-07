@@ -87,7 +87,7 @@ int GameState::getBestScore()
 // gives a proportional time based on offset
 int proportionalTime(double distance1, int distance2, int time)
 {
-    return (static_cast<double>(distance2 - 1150) / (distance1 - 1150)) * time;
+    return (static_cast<double>(distance2 - 600) / (distance1 - 600)) * time;
 }
 
 static const std::array<std::array<int, 3>, 50> combos{
@@ -132,14 +132,14 @@ void GameState::kickStartTrees()
 
         if (isFirstBatch) {
             qInfo() << "Tree set A: " << p1 << " " << p2 << " " << p3;
-            animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
-            animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
-            animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
+            animation1 = Helpers().startAnimation(tree1, 0, p1, t1);
+            animation2 = Helpers().startAnimation(tree2, 100, p2, t2);
+            animation3 = Helpers().startAnimation(tree3, 180, p3, t3);
         } else {
             qInfo() << "Tree set B: " << p1 << " " << p2 << " " << p3;
-            animation4 = Helpers().startAnimation(tree4, 50, p1, t1);
-            animation5 = Helpers().startAnimation(tree5, 200, p2, t2);
-            animation6 = Helpers().startAnimation(tree6, 350, p3, t3);
+            animation4 = Helpers().startAnimation(tree4, 0, p1, t1);
+            animation5 = Helpers().startAnimation(tree5, 100, p2, t2);
+            animation6 = Helpers().startAnimation(tree6, 180, p3, t3);
 
             // only speed up on full cycles
             animationTime = std::max(animationTime - 250, 100);
@@ -153,9 +153,9 @@ void GameState::kickStartTrees()
         int t1 = proportionalTime(-1200, p1, animationTime);
         int t2 = proportionalTime(-1200, p2, animationTime);
         int t3 = proportionalTime(-1200, p3, animationTime);
-        animation1 = Helpers().startAnimation(tree1, 50, p1, t1);
-        animation2 = Helpers().startAnimation(tree2, 200, p2, t2);
-        animation3 = Helpers().startAnimation(tree3, 350, p3, t3);
+        animation1 = Helpers().startAnimation(tree1, 0, p1, t1);
+        animation2 = Helpers().startAnimation(tree2, 100, p2, t2);
+        animation3 = Helpers().startAnimation(tree3, 180, p3, t3);
         isFirstBatch = false; // Next one should be Batch B
     }
 
