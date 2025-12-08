@@ -43,6 +43,9 @@ void SonarControlledView::readSonarData()
         return;
     }
 
+    file.seek(0);
+    qWarning() << "seeked to 0";
+    
     // read in the msot recent line
     QTextStream in(&file);
     QString line;
