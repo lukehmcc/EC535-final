@@ -37,6 +37,7 @@ SonarControlledView::~SonarControlledView()
 
 void SonarControlledView::readSonarData()
 {
+    qWarning() << "began poll";
     if (!file.isOpen() || !file.isReadable())
         return;
 
@@ -51,6 +52,8 @@ void SonarControlledView::readSonarData()
 
     if (line.isEmpty())
         return;
+
+    qWarning() << "line : " << line;
 
     // Parse the string for 3 integers (extracts only numbers)
     QRegExp numberRegex("-?\\d+"); //
@@ -75,6 +78,8 @@ void SonarControlledView::readSonarData()
     echo1 = numbers[0].toInt(&ok1);
     echo2 = numbers[1].toInt(&ok2);
     echo3 = numbers[2].toInt(&ok3);
+
+    qWarning() << echo1 << " " << echo2 << " " << echo3;
 
     int smallest;
 
