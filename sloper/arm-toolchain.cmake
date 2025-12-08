@@ -26,7 +26,7 @@ set(CMAKE_LINKER "${BUILDROOT_HOST_BIN}/arm-linux-ld")
 
 set(CMAKE_SYSROOT /ad/eng/courses/ec/ec535/bbb/buildroot-2021.02.1/output/host/arm-buildroot-linux-gnueabihf/sysroot)
 
-# CMAKE_FIND_ROOT_PATH (probably not best practice to set explcitly but idc it works)
+# CMAKE_FIND_ROOT_PATH
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}")
 
 set(CMAKE_PREFIX_PATH 
