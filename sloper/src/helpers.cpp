@@ -24,7 +24,7 @@ QPropertyAnimation *Helpers::startAnimation(AnimatableImage *i, int x, int y_off
     QPropertyAnimation *a = new QPropertyAnimation(i, "pos");
     a->setDuration(duration);               // 5 seconds to move down
     a->setStartValue(QPointF(x, y_offset)); // Start above screen at x=200
-    a->setEndValue(QPointF(x, 1150));       // End below screen
+    a->setEndValue(QPointF(x, 600));        // End below screen
     a->setEasingCurve(QEasingCurve::Linear);
     a->start();
     return a;

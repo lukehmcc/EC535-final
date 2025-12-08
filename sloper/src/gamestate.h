@@ -16,6 +16,8 @@ public:
               AnimatableImage *t4,
               AnimatableImage *t5,
               AnimatableImage *t6,
+              AnimatableImage *b1,
+              AnimatableImage *b2,
               QTimer *c,
               QElapsedTimer *e);
     AnimatableImage *guy;
@@ -25,12 +27,16 @@ public:
     AnimatableImage *tree4;
     AnimatableImage *tree5;
     AnimatableImage *tree6;
+    AnimatableImage *background1;
+    AnimatableImage *background2;
     QPropertyAnimation *animation1;
     QPropertyAnimation *animation2;
     QPropertyAnimation *animation3;
     QPropertyAnimation *animation4;
     QPropertyAnimation *animation5;
     QPropertyAnimation *animation6;
+    QPropertyAnimation *background1Animation;
+    QPropertyAnimation *background2Animation;
     QTimer *colTimer;
     QElapsedTimer *elapsed;
     bool isPaused();

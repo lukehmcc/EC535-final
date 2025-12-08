@@ -49,7 +49,16 @@ int main(int argc, char *argv[])
     AnimatableImage *tree6 = Helpers().loadImage("../static/pine.png", 100, 100);
     scene.addItem(tree6);
     tree6->setPos(600, 150); // put tree off screen
-
+    // background 1
+    AnimatableImage *background1 = Helpers().loadImage("../static/background.png", 272, 960);
+    scene.addItem(background1);
+    background1->setPos(0, 0); // put tree off screen
+    background1->setZValue(-1);
+    // background 2
+    AnimatableImage *background2 = Helpers().loadImage("../static/background.png", 272, 960);
+    scene.addItem(background2);
+    background2->setPos(300, 0); // put tree off screen
+    background2->setZValue(-1);
     // Define the collsion clock
     QTimer *colisionClock = new QTimer(&scene);
 
@@ -66,14 +75,23 @@ int main(int argc, char *argv[])
     title->setPos(126, 240);
 
     // define the game logic
-    GameState *state
-        = new GameState(guy, tree1, tree2, tree3, tree4, tree5, tree6, colisionClock, elapsed);
+    GameState *state = new GameState(guy,
+                                     tree1,
+                                     tree2,
+                                     tree3,
+                                     tree4,
+                                     tree5,
+                                     tree6,
+                                     background1,
+                                     background2,
+                                     colisionClock,
+                                     elapsed);
 
     // Start the time based watcher
     QObject::connect(colisionClock, &QTimer::timeout, [&]() {
         // check collision
         for (auto *it : scene.items()) {
-            if (it != guy && it->collidesWithItem(guy)) {
+            if (it != guy && it != background1 && it != background2 && it->collidesWithItem(guy)) {
                 state->stop();
             }
         }

@@ -12,6 +12,8 @@ GameState::GameState(AnimatableImage *g,
                      AnimatableImage *t4,
                      AnimatableImage *t5,
                      AnimatableImage *t6,
+                     AnimatableImage *b1,
+                     AnimatableImage *b2,
                      QTimer *c,
                      QElapsedTimer *e)
     : paused(false)
@@ -22,6 +24,8 @@ GameState::GameState(AnimatableImage *g,
     , tree4(t4)
     , tree5(t5)
     , tree6(t6)
+    , background1(b1)
+    , background2(b2)
     , colTimer(c)
     , elapsed(e)
 {
@@ -33,6 +37,8 @@ GameState::GameState(AnimatableImage *g,
     animation5 = nullptr;
     animation6 = nullptr;
     animationTimer = nullptr;
+    background1Animation = nullptr;
+    background2Animation = nullptr;
 
     // normal init
     bestScore = 0; // init
@@ -62,6 +68,10 @@ void GameState::stop()
         animation6->stop();
     if (animationTimer)
         animationTimer->stop();
+    if (background1Animation)
+        background1Animation->stop();
+    if (background2Animation)
+        background2Animation->stop();
     if (colTimer)
         colTimer->stop();
     if (elapsed && elapsed->elapsed() > bestScore) {
@@ -135,11 +145,15 @@ void GameState::kickStartTrees()
             animation1 = Helpers().startAnimation(tree1, 0, p1, t1);
             animation2 = Helpers().startAnimation(tree2, 100, p2, t2);
             animation3 = Helpers().startAnimation(tree3, 180, p3, t3);
+            int b1 = proportionalTime(-1200, -960, animationTime);
+            background1Animation = Helpers().startAnimation(background1, 0, -960, b1);
         } else {
             qInfo() << "Tree set B: " << p1 << " " << p2 << " " << p3;
             animation4 = Helpers().startAnimation(tree4, 0, p1, t1);
             animation5 = Helpers().startAnimation(tree5, 100, p2, t2);
             animation6 = Helpers().startAnimation(tree6, 180, p3, t3);
+            int b2 = proportionalTime(-1200, -960, animationTime);
+            background2Animation = Helpers().startAnimation(background2, 0, -960, b2);
 
             // only speed up on full cycles
             animationTime = std::max(animationTime - 250, 100);
@@ -156,6 +170,10 @@ void GameState::kickStartTrees()
         animation1 = Helpers().startAnimation(tree1, 0, p1, t1);
         animation2 = Helpers().startAnimation(tree2, 100, p2, t2);
         animation3 = Helpers().startAnimation(tree3, 180, p3, t3);
+        int b1 = proportionalTime(-1200, -960, animationTime);
+        int b2 = proportionalTime(-1200, 0, animationTime);
+        background1Animation = Helpers().startAnimation(background1, 0, -960, b1);
+        background2Animation = Helpers().startAnimation(background2, 0, 0, b2);
         isFirstBatch = false; // Next one should be Batch B
     }
 
@@ -171,4 +189,6 @@ void GameState::putTreesOffScreen()
     tree4->setPos(600, 150);
     tree5->setPos(600, 150);
     tree6->setPos(600, 150);
+    background1->setPos(0, 0);   // put tree off screen
+    background2->setPos(300, 0); // put tree off screen
 }
