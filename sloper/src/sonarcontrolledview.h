@@ -1,5 +1,6 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <fstream>
 
 #include "animatableimage.h"
 #include "gamestate.h"
@@ -23,7 +24,7 @@ private:
     GameState *state;
     QTimer *sonarClock;
     qreal m_stepSize;
-    QFile file;
+    std::ifstream file;
     int pos_left;
     int pos_center;
     int pos_right;

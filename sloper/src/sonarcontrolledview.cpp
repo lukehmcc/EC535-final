@@ -1,9 +1,9 @@
 #include "sonarcontrolledview.h"
 #include <QDebug>
-#include <QFile>
 #include <QStringList>
-#include <QTextStream>
 #include <QTimer>
+#include <fstream>
+#include <string>
 
 SonarControlledView::SonarControlledView(GameState *state)
     : state(state)
@@ -16,8 +16,8 @@ SonarControlledView::SonarControlledView(GameState *state)
     pos_right = 200;
 
     // if file is good, start the timer
-    file.setFileName("/dev/sonar");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    file.open("/dev/sonar");
+    if (!file.is_open()) {
         qWarning() << "Failed to open /dev/sonar";
     } else {
         // 3. Setup the timer only if file opened successfully
@@ -30,7 +30,7 @@ SonarControlledView::SonarControlledView(GameState *state)
 // destructor
 SonarControlledView::~SonarControlledView()
 {
-    if (file.isOpen()) {
+    if (file.is_open()) {
         file.close();
     }
 }
@@ -38,51 +38,61 @@ SonarControlledView::~SonarControlledView()
 void SonarControlledView::readSonarData()
 {
     qWarning() << "began poll";
-    if (!file.isOpen() || !file.isReadable()) {
-        qWarning() << "File not open/not readable";
+    
+    // Close and reopen to reset kernel module's offset
+    // The kernel module sets *offset after read, so we need to reset it
+    if (file.is_open()) {
+        file.close();
+    }
+    
+    file.open("/dev/sonar");
+    if (!file.is_open()) {
+        qWarning() << "File not open";
         return;
     }
-
-    file.seek(0);
-    qWarning() << "seeked to 0";
     
-    // read in the msot recent line
-    QTextStream in(&file);
-    QString line;
-    while (!in.atEnd()) {
-        line = in.readLine();
+    // read one line (kernel module returns one line per read)
+    std::string line;
+    if (!std::getline(file, line)) {
+        qWarning() << "Failed to read line";
+        return;
     }
     
-    if (line.isEmpty()) {
+    if (line.empty()) {
         qWarning() << "Line is empty";
         return;
     }
+    
+    QString qLine = QString::fromStdString(line);
 
-    qWarning() << "line : " << line;
+    qWarning() << "line : " << qLine;
 
-    // Parse the string for 3 integers (extracts only numbers)
-    QRegExp numberRegex("-?\\d+"); //
+    // Parse the string for 3 integers (format: "ECHO1: %d ECHO2: %d ECHO3: %d")
+    // Extract numbers that come after colons and spaces
+    QRegExp numberRegex(":\\s*(\\d+)");
     QStringList numbers;
 
     int pos = 0;
-    while ((pos = numberRegex.indexIn(line, pos)) != -1) {
-        numbers << numberRegex.cap(0);
+    while ((pos = numberRegex.indexIn(qLine, pos)) != -1) {
+        numbers << numberRegex.cap(1);  // cap(1) is the captured group (the number)
         pos += numberRegex.matchedLength();
     }
 
     if (numbers.size() < 3) {
-        qWarning() << "Not enough integers found in data";
+        qWarning() << "Not enough integers found in data, found: " << numbers.size();
         return;
     }
 
     bool ok1, ok2, ok3;
-    if (!ok1 || !ok2 || !ok3) {
-        return; // Safety check
-    }
     int echo1, echo2, echo3;
     echo1 = numbers[0].toInt(&ok1);
     echo2 = numbers[1].toInt(&ok2);
     echo3 = numbers[2].toInt(&ok3);
+    
+    if (!ok1 || !ok2 || !ok3) {
+        qWarning() << "Failed to parse integers";
+        return; // Safety check
+    }
 
     qWarning() << echo1 << " " << echo2 << " " << echo3;
 
