@@ -13,14 +13,20 @@ class SonarControlledView : public QGraphicsView
     Q_OBJECT
 
 public:
-    SonarControlledView(QGraphicsScene *scene, GameState *state);
+    SonarControlledView(GameState *state);
+    ~SonarControlledView();
 
 protected:
-    void sonarPoll(QKeyEvent *event) override;
+    void readSonarData();
 
 private:
     GameState *state;
+    QTimer *sonarClock;
     qreal m_stepSize;
+    QFile file;
+    int pos_left;
+    int pos_center;
+    int pos_right;
     bool is_left = false;
     bool is_right = false;
     bool is_top = false;

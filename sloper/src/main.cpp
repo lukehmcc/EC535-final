@@ -12,6 +12,7 @@
 #include "gamestate.h"
 #include "helpers.h"
 #include "keyboardcontrolledview.h"
+#include "sonarcontrolledview.h"
 
 int main(int argc, char *argv[])
 {
@@ -110,6 +111,8 @@ int main(int argc, char *argv[])
     });
     colisionClock->start(10); // start polling
 
+    // set up sonar
+    SonarControlledView sonar(state);
     // Setup View with keyboard controls
     KeyboardControlledView view(&scene, state);
     view.setRenderHint(QPainter::Antialiasing);

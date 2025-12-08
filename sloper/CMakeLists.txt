@@ -69,6 +69,7 @@ else()
             src/gamestate.h src/gamestate.cpp
             src/keyboardcontrolledview.h src/keyboardcontrolledview.cpp
             src/helpers.h src/helpers.cpp
+            src/sonarcontrolledview.cpp src/sonarcontrolledview.h
         )
     endif()
 endif()
