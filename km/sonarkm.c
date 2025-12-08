@@ -299,7 +299,7 @@ static ssize_t sonar_read(struct file *filep, char __user *buffer, size_t len, l
   // TODO: Print which lights are active
   count += scnprintf(buf + count, sizeof(buf) - count, "ECHO1: %d ", echo1_duration_us);
   count += scnprintf(buf + count, sizeof(buf) - count, "ECHO2: %d ", echo2_duration_us);
-  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO3: %d ", echo3_duration_us);
+  count += scnprintf(buf + count, sizeof(buf) - count, "ECHO3: %d \n", echo3_duration_us);
   // then sent that to the user
   if (copy_to_user(buffer, buf, count))
     return -EFAULT;

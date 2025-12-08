@@ -47,11 +47,9 @@ void SonarControlledView::readSonarData()
     QTextStream in(&file);
     QString line;
     while (!in.atEnd()) {
-        QString temp = in.readLine();
-        if (!temp.isEmpty())
-            line = temp;
+        line = in.readLine()
     }
-
+    
     if (line.isEmpty()) {
         qWarning() << "Line is empty";
         return;
