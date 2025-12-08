@@ -9,7 +9,7 @@ AnimatableImage *Helpers::loadImage(QString path, int width, int height)
         qWarning() << "Image failed to load! Check your path.";
         // Fallback: create a colored square so you can still see the animation
         // work
-        pix = QPixmap(100, 100);
+        pix = QPixmap(70, 70);
         pix.fill(Qt::red);
     } else {
         // make sure to scale it down to fir the canvas
