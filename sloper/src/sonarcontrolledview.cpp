@@ -37,6 +37,9 @@ SonarControlledView::~SonarControlledView()
 
 void SonarControlledView::readSonarData()
 {
+    if (state->isPaused()) {
+        return;
+    }
     qWarning() << "began poll";
     
     // Close and reopen to reset kernel module's offset
