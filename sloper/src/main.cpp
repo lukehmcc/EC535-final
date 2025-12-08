@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     QGraphicsTextItem *timerText = scene.addText("0");
     timerText->setPos(220, 20);
     QGraphicsTextItem *bestScoreText = scene.addText("Best Score: 0");
-    bestScoreText->setPos(100, 20);
+    bestScoreText->setPos(20, 20);
     QElapsedTimer *elapsed = new QElapsedTimer();
     elapsed->start(); // keeps track of how long since it started
 
