@@ -52,27 +52,29 @@ int main(int argc, char *argv[])
     // background 1
     AnimatableImage *background1 = Helpers().loadImage("../static/background.png", 272, 960);
     scene.addItem(background1);
-    background1->setPos(0, 0); // put tree off screen
+    background1->setPos(0, 0);
     background1->setZValue(-1);
     // background 2
     AnimatableImage *background2 = Helpers().loadImage("../static/background.png", 272, 960);
     scene.addItem(background2);
     background2->setPos(300, 0); // put tree off screen
     background2->setZValue(-1);
+
     // Define the collsion clock
     QTimer *colisionClock = new QTimer(&scene);
 
     // Score counter cock
     QGraphicsTextItem *timerText = scene.addText("0");
-    timerText->setPos(240, 20);
+    timerText->setPos(220, 20);
     QGraphicsTextItem *bestScoreText = scene.addText("Best Score: 0");
     bestScoreText->setPos(100, 20);
     QElapsedTimer *elapsed = new QElapsedTimer();
     elapsed->start(); // keeps track of how long since it started
 
-    // title
-    QGraphicsTextItem *title = scene.addText("Wizard Ski");
-    title->setPos(126, 240);
+    // title screen
+    AnimatableImage *titleImage = Helpers().loadImage("../static/title.png", 272, 480);
+    scene.addItem(titleImage);
+    titleImage->setPos(0, 0);
 
     // define the game logic
     GameState *state = new GameState(guy,
@@ -91,13 +93,14 @@ int main(int argc, char *argv[])
     QObject::connect(colisionClock, &QTimer::timeout, [&]() {
         // check collision
         for (auto *it : scene.items()) {
-            if (it != guy && it != background1 && it != background2 && it->collidesWithItem(guy)) {
+            if (it != guy && it != background1 && it != background2 && it != titleImage
+                && it->collidesWithItem(guy)) {
                 state->stop();
             }
         }
         // add title screen hover
-        if (!state->titleScreen && title) {
-            title->hide();
+        if (!state->titleScreen && titleImage) {
+            titleImage->hide();
         }
         // update timer
         if (!state->paused) {
