@@ -50,7 +50,7 @@ void SonarControlledView::readSonarData()
     QTextStream in(&file);
     QString line;
     while (!in.atEnd()) {
-        line = in.readLine()
+        line = in.readLine();
     }
     
     if (line.isEmpty()) {
