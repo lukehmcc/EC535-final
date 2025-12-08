@@ -41,6 +41,8 @@ void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
             newPos.setX(currentPos.x() + m_stepSize);
         }
         break;
+    case Qt::Key_Escape:
+        state->titleScreen = true;
     default:
         QGraphicsView::keyPressEvent(event);
         return;
