@@ -38,9 +38,10 @@ SonarControlledView::~SonarControlledView()
 void SonarControlledView::readSonarData()
 {
     qWarning() << "began poll";
-    if (!file.isOpen() || !file.isReadable())
+    if (!file.isOpen() || !file.isReadable()) {
         qWarning() << "File not open/not readable";
         return;
+    }
 
     // read in the msot recent line
     QTextStream in(&file);
@@ -51,21 +52,22 @@ void SonarControlledView::readSonarData()
             line = temp;
     }
 
-    if (line.isEmpty())
+    if (line.isEmpty()) {
         qWarning() << "Line is empty";
         return;
+    }
 
-        qWarning() << "line : " << line;
+    qWarning() << "line : " << line;
 
-        // Parse the string for 3 integers (extracts only numbers)
-        QRegExp numberRegex("-?\\d+"); //
-        QStringList numbers;
+    // Parse the string for 3 integers (extracts only numbers)
+    QRegExp numberRegex("-?\\d+"); //
+    QStringList numbers;
 
-        int pos = 0;
-        while ((pos = numberRegex.indexIn(line, pos)) != -1) {
-            numbers << numberRegex.cap(0);
-            pos += numberRegex.matchedLength();
-        }
+    int pos = 0;
+    while ((pos = numberRegex.indexIn(line, pos)) != -1) {
+        numbers << numberRegex.cap(0);
+        pos += numberRegex.matchedLength();
+    }
 
     if (numbers.size() < 3) {
         qWarning() << "Not enough integers found in data";
