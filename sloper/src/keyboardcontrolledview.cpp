@@ -51,3 +51,14 @@ void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
     // update skier position
     state->guy->setPos(newPos);
 }
+
+void KeyboardControlledView::mousePressEvent(QMouseEvent *event)
+{
+    // if any mouse/touch event happens you wanna restart (if it's stopped)
+    if (state->isPaused()) {
+        state->reset();
+    }
+    
+    // Call base class implementation
+    QGraphicsView::mousePressEvent(event);
+}

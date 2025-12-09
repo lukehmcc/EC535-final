@@ -1,5 +1,6 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 #include "animatableimage.h"
 #include "gamestate.h"
@@ -17,6 +18,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     GameState *state;

@@ -12,7 +12,6 @@
 #include "gamestate.h"
 #include "helpers.h"
 #include "keyboardcontrolledview.h"
-#include "sonarcontrolledview.h"
 
 int main(int argc, char *argv[])
 {
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
     // background 2
     AnimatableImage *background2 = Helpers().loadImage("../static/background.png", 272, 960);
     scene.addItem(background2);
-    background2->setPos(300, 0); // put tree off screen
+    background2->setPos(300, 0); // put tree off screengit 
     background2->setZValue(-1);
 
     // Define the collsion clock
@@ -111,8 +110,6 @@ int main(int argc, char *argv[])
     });
     colisionClock->start(10); // start polling
 
-    // set up sonar
-    SonarControlledView sonar(state);
     // Setup View with keyboard controls
     KeyboardControlledView view(&scene, state);
     view.setRenderHint(QPainter::Antialiasing);
