@@ -46,6 +46,8 @@ public:
     void reset();
     int getBestScore();
     void putTreesOffScreen();
+    // cancels the auto-return timer if it's running
+    void cancelAutoReturn();
     bool paused;
     bool titleScreen;
 
@@ -53,8 +55,10 @@ private:
     int bestScore;
     int animationTime;
     QTimer *animationTimer;
+    QTimer *autoReturnTimer;
     void kickStartTrees();
     bool isFirstBatch;
+    void returnToHomeMenu();
 };
 
 #endif // GAMESTATE_H

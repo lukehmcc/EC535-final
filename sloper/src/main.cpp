@@ -98,8 +98,10 @@ int main(int argc, char *argv[])
                 state->stop();
             }
         }
-        // add title screen hover
-        if (!state->titleScreen && titleImage) {
+        // add title screen visibility
+        if (state->titleScreen && titleImage) {
+            titleImage->show();
+        } else if (!state->titleScreen && titleImage) {
             titleImage->hide();
         }
         // update timer

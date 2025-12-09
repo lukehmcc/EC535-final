@@ -18,6 +18,8 @@ void KeyboardControlledView::keyPressEvent(QKeyEvent *event)
 
     // if any key event happens you wanna restart (if it's stopped)
     if (state->isPaused()) {
+        // cancel auto-return timer if it's running
+        state->cancelAutoReturn();
         state->reset();
     }
 
@@ -56,6 +58,8 @@ void KeyboardControlledView::mousePressEvent(QMouseEvent *event)
 {
     // if any mouse/touch event happens you wanna restart (if it's stopped)
     if (state->isPaused()) {
+        // cancel auto-return timer if it's running
+        state->cancelAutoReturn();
         state->reset();
     }
     

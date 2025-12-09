@@ -39,6 +39,7 @@ GameState::GameState(AnimatableImage *g,
     animationTimer = nullptr;
     background1Animation = nullptr;
     background2Animation = nullptr;
+    autoReturnTimer = nullptr;
 
     // normal init
     bestScore = 0; // init
@@ -77,10 +78,23 @@ void GameState::stop()
     if (elapsed && elapsed->elapsed() > bestScore) {
         bestScore = elapsed->elapsed();
     }
+    
+    // start auto-return timer (15000 ms = 15 s)
+    if (!autoReturnTimer) {
+        autoReturnTimer = new QTimer();
+        autoReturnTimer->setSingleShot(true);
+        QObject::connect(autoReturnTimer, &QTimer::timeout, [this]() {
+            returnToHomeMenu();
+        });
+    }
+    autoReturnTimer->start(15000); // 15 seconds
 }
 // Resets the game to intial state (doesn't clear clock)
 void GameState::reset()
 {
+    // cancel auto-return timer if it's running
+    cancelAutoReturn();
+    
     putTreesOffScreen();
     paused = false;
     titleScreen = false;
@@ -191,4 +205,18 @@ void GameState::putTreesOffScreen()
     tree6->setPos(600, 150);
     background1->setPos(0, 0);   // put tree off screen
     background2->setPos(300, 0); // put tree off screen
+}
+
+// cancels the auto-return timer if it's running
+void GameState::cancelAutoReturn()
+{
+    if (autoReturnTimer && autoReturnTimer->isActive()) {
+        autoReturnTimer->stop();
+    }
+}
+
+// Returns to the home menu screen
+void GameState::returnToHomeMenu()
+{
+    titleScreen = true;
 }
