@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     // sources from the build/ directory
     AnimatableImage *guy = Helpers().loadImage("../static/wizard.png", 70, 70);
     scene.addItem(guy);
-    guy->setPos(120, 300);
+    guy->setPos(100, 300);
 
     // tree1
     AnimatableImage *tree1 = Helpers().loadImage("../static/pine.png", 100, 100);

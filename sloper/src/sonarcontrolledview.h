@@ -32,6 +32,7 @@ private:
     bool is_right = false;
     bool is_top = false;
     bool is_bottom = false;
+    int last_detected_lane; // track the last lane where an object was detected
 };
 
 #endif // SONARCONTROLLEDVIEW_H

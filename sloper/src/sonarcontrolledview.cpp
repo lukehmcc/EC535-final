@@ -14,6 +14,7 @@ SonarControlledView::SonarControlledView(GameState *state)
     pos_left = 0;
     pos_center = 100;
     pos_right = 200;
+    last_detected_lane = 2; // initialize to center lane (1 2 3)
 
     // if file is good, start the timer
     file.open("/dev/sonar");
@@ -99,31 +100,48 @@ void SonarControlledView::readSonarData()
 
     qWarning() << echo1 << " " << echo2 << " " << echo3;
 
-    int smallest;
-
-    if (echo1 < echo2 && echo1 < echo3) {
-        smallest = 1;
-    } else if (echo2 < echo1 && echo2 < echo3) {
-        smallest = 2;
-    } else {
-        smallest = 3;
+    // if all echoes are above this threshold, no object is detected
+    const int DETECTION_THRESHOLD = 1000; // can change later
+    
+    // check if any sensor detects an object
+    bool left_detected = echo1 < DETECTION_THRESHOLD;
+    bool center_detected = echo2 < DETECTION_THRESHOLD;
+    bool right_detected = echo3 < DETECTION_THRESHOLD;
+    
+    // update position only if at least one sensor detects an object
+    if (left_detected || center_detected || right_detected) {
+        int smallest;
+        
+        // find which sensor has the closest object
+        if (echo1 < echo2 && echo1 < echo3) {
+            smallest = 1;
+        } else if (echo2 < echo1 && echo2 < echo3) {
+            smallest = 2;
+        } else {
+            smallest = 3;
+        }
+        
+        // update position based on detected lane
+        switch (smallest) {
+        case 1:
+            is_right = false;
+            is_left = true;
+            state->guy->setX(pos_left);
+            last_detected_lane = 1;
+            break;
+        case 2:
+            is_right = false;
+            is_left = false;
+            state->guy->setX(pos_center);
+            last_detected_lane = 2;
+            break;
+        case 3:
+            is_right = true;
+            is_left = false;
+            state->guy->setX(pos_right);
+            last_detected_lane = 3;
+            break;
+        }
     }
-
-    // handle arrow key movement
-    switch (smallest) {
-    case 1:
-        is_right = false;
-        is_left = true;
-        state->guy->setX(pos_left);
-        break;
-    case 2:
-        is_right = false;
-        is_left = false;
-        state->guy->setX(pos_center);
-        break;
-    case 3:
-        is_right = true;
-        is_left = false;
-        state->guy->setX(pos_right);
-    }
+    // if no object is detected, keep the character in the last detected lane
 }
